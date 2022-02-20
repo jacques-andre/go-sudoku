@@ -55,6 +55,26 @@ func validPosInCol(board *Board, cellVal int, colN int) bool{
 }
 
 
+// Check if cellVal can be placed in the 3x3 subgrid
+// Returns true if valid pos
+func validPosInSubGrid(board *Board, cellVal int, colN int, rowN int) bool{
+    rowStart := (rowN / 3) * 3
+    colStart := (colN / 3) * 3
+
+    for i := colStart; i < colStart + 3; i++{
+      for j := rowStart; j < rowStart + 3; j++{
+        subGridCell := &board.BoardArray[i][j]
+        fmt.Println(*subGridCell)
+          if *subGridCell == cellVal {
+            return false;
+          }
+      }
+    }
+    return true;
+
+}
+
+
 // Helper Method:
 // Prints board nicely
 func printBoard(board *Board){
@@ -62,6 +82,8 @@ func printBoard(board *Board){
     fmt.Println(v)
   }
 }
+
+
 
 
 func main(){
