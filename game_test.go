@@ -57,3 +57,22 @@ func TestValidInBoardCol(t *testing.T){
     t.Errorf("Failed! Got:%t, want:%t", got, want)
   }
 }
+
+func TestInValidInBoardCol(t *testing.T){
+  board := newPlayingBoard()
+
+  // Test vars
+  valueN := 9
+  colN := 0
+
+  got := validPosInCol(board, valueN, colN)
+  want := false
+  
+  fmt.Printf("Checking:%d, col:%d", valueN, colN)
+  printBoard(board)
+
+
+  if got != want {
+    t.Errorf("Failed! Got:%t, want:%t", got, want)
+  }
+}
