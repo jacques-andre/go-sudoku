@@ -72,3 +72,41 @@ func TestInValidInBoardCol(t *testing.T) {
 		t.Errorf("Failed! Got:%t, want:%t", got, want)
 	}
 }
+
+func TestValidInBoardSubGrid(t *testing.T) {
+	board := newPlayingBoard()
+
+	// Test vars
+	valueN := 9
+	colN := 0
+	rowN := 0
+
+	got := board.validPosInSubGrid(valueN, colN, rowN)
+	want := true
+
+  fmt.Printf("Checking:%d,col:%d,row:%d \n", valueN, colN, rowN)
+	printBoard(board)
+
+	if got != want {
+		t.Errorf("Failed! Got:%t, want:%t", got, want)
+	}
+}
+
+func TestInValidInBoardSubGrid(t *testing.T) {
+	board := newPlayingBoard()
+
+	// Test vars
+	valueN := 3
+	colN := 0
+	rowN := 0
+
+	got := board.validPosInSubGrid(valueN, colN, rowN)
+	want := false
+
+  fmt.Printf("Checking:%d,col:%d,row:%d \n", valueN, colN, rowN)
+	printBoard(board)
+
+	if got != want {
+		t.Errorf("Failed! Got:%t, want:%t", got, want)
+	}
+}
