@@ -24,7 +24,7 @@ func (board *Board) GenerateBoard(cellVal int, row int, col int) bool {
 
 	// generate random number
 	randNum := rand.Intn(10-1) + 1
-  rand.Seed(time.Now().UnixNano())
+	rand.Seed(time.Now().UnixNano())
 
 	for i := 0; i <= 8; i++ {
 		board.PrintBoard()
@@ -68,7 +68,8 @@ func (board *Board) SolveBoard(cellVal int, row int, col int) bool {
 	return false
 }
 
-// Checks all valid pos funcs, returns if validPos
+// Checks all valid pos funcs
+// Returns true if valid
 func (board *Board) ValidPos(cellVal int, row int, col int) bool {
 	isValidInRow := board.ValidPosInRow(cellVal, row)
 	isValidInCol := board.ValidPosInCol(cellVal, col)
@@ -80,7 +81,8 @@ func (board *Board) ValidPos(cellVal int, row int, col int) bool {
 	return false
 }
 
-// Returns [row,col] of next avaliable pos on board
+// Checks next free pos on board
+// Returns [row,col] of free pos
 func (board *Board) FreePos() []int {
 	for row := 0; row < len(board.BoardArray); row++ {
 		for col := 0; col < len(board.BoardArray[row]); col++ {
@@ -124,8 +126,7 @@ func (board *Board) ValidPosInSubGrid(cellVal int, colN int, rowN int) bool {
 	colStart := (colN / 3) * 3
 
 	// Go through the subgrid,
-	// check if any values are equal to,
-	// cellVal > invalid
+	// check if any values are equal to cellVal
 	for row := rowStart; row < rowStart+3; row++ {
 		for col := colStart; col < colStart+3; col++ {
 			subGridCell := board.BoardArray[row][col]
@@ -141,7 +142,7 @@ func (board *Board) ValidPosInSubGrid(cellVal int, colN int, rowN int) bool {
 // Helper Method:
 // Prints board nicely
 func (board *Board) PrintBoard() {
-	for _, v := range board.BoardArray {
-		fmt.Println(v)
-	}
+  for row := 0; row < len(board.BoardArray); row++{
+    fmt.Println(board.BoardArray[row])
+  }
 }
