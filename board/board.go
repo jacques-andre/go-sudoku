@@ -10,9 +10,8 @@ type Board struct {
 	BoardArray [9][9]int
 }
 
-// Generates a valid board with some blank spaces,
-// user playable board
-func (board *Board) SolveBoard(cellVal int, row int, col int) bool {
+// Creates a valid random BoardArray
+func (board *Board) GenerateBoard(cellVal int, row int, col int) bool {
 	// get the next available pos on board
 	freePos := board.FreePos()
 	if freePos == nil {
@@ -25,15 +24,42 @@ func (board *Board) SolveBoard(cellVal int, row int, col int) bool {
 
 	// generate random number
 	randNum := rand.Intn(10-1) + 1
-	rand.Seed(time.Now().UnixNano())
+  rand.Seed(time.Now().UnixNano())
 
 	for i := 0; i <= 8; i++ {
-		// board.printBoard()
+		board.PrintBoard()
 		// fmt.Printf("Checking: row:%d,col:%d,val:%d \n", freeRow, freeCol, randNum)
 		if board.ValidPos(randNum, freeRow, freeCol) {
 			// fmt.Printf("Valid! row:%d, col:%d, val:%d \n", freeRow, freeCol, randNum)
 			board.BoardArray[freeRow][freeCol] = randNum
-			if board.SolveBoard(randNum, freeRow, freeCol) {
+			if board.GenerateBoard(randNum, freeRow, freeCol) {
+				return true
+			}
+			board.BoardArray[freeRow][freeCol] = 0
+		}
+	}
+	return false
+}
+
+// Solves BoardArray (existing board)
+func (board *Board) SolveBoard(cellVal int, row int, col int) bool {
+	// get the next available pos on board
+	freePos := board.FreePos()
+	if freePos == nil {
+		// no more positions, done
+		return true
+	}
+
+	freeRow := freePos[0]
+	freeCol := freePos[1]
+
+	for i := 1; i <= 9; i++ {
+		// board.PrintBoard()
+		// fmt.Printf("Checking: row:%d,col:%d,val:%d \n", freeRow, freeCol, i)
+		if board.ValidPos(i, freeRow, freeCol) {
+			// fmt.Printf("Valid! row:%d, col:%d, val:%d \n", freeRow, freeCol, i)
+			board.BoardArray[freeRow][freeCol] = i
+			if board.SolveBoard(i, freeRow, freeCol) {
 				return true
 			}
 			board.BoardArray[freeRow][freeCol] = 0
@@ -54,6 +80,7 @@ func (board *Board) ValidPos(cellVal int, row int, col int) bool {
 	return false
 }
 
+// Returns [row,col] of next avaliable pos on board
 func (board *Board) FreePos() []int {
 	for row := 0; row < len(board.BoardArray); row++ {
 		for col := 0; col < len(board.BoardArray[row]); col++ {
@@ -118,4 +145,3 @@ func (board *Board) PrintBoard() {
 		fmt.Println(v)
 	}
 }
-
