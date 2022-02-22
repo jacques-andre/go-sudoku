@@ -3,17 +3,36 @@
 
 ## Solving Approaches:
 
-**Brute force:**
+### Brute force:
 
 Generate **all** possible solutions, then validate **all** possible solutions.
 - Slow
 
-**Backtracking:**
+### Backtracking:
 
-**Dancing Links**
+3 Key concepts:
+- Choice
+- Constraint
+- Goal
+
+**Choice:**
+- Numbers 1-9
+
+**Constraint:**
+- Valid in row?
+- Valid in col?
+- Valid in subgrid (3x3)?
+
+**Goal:**
+- Reached Base cases:
+  - Finished a row/col. > Move on
 
 
-**Depth first search**
+
+### Dancing Links
+
+
+### Depth first search
 
 ....
 ## Resources:
