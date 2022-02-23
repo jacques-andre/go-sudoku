@@ -27,12 +27,12 @@ func (board *Board) GenerateBoard(cellVal int, row int, col int) bool {
 	rand.Seed(time.Now().UnixNano())
 
 	for i := 0; i <= 8; i++ {
-		board.PrintBoard()
+		// board.PrintBoard()
 		// fmt.Printf("Checking: row:%d,col:%d,val:%d \n", freeRow, freeCol, randNum)
 		if board.ValidPos(randNum, freeRow, freeCol) {
 			// fmt.Printf("Valid! row:%d, col:%d, val:%d \n", freeRow, freeCol, randNum)
 			board.BoardArray[freeRow][freeCol] = randNum
-			if board.GenerateBoard(randNum, freeRow, freeCol) {
+			if board.GenerateBoard(randNum, freeRow, freeCol + 1) {
 				return true
 			}
 			board.BoardArray[freeRow][freeCol] = 0
@@ -59,7 +59,7 @@ func (board *Board) SolveBoard(cellVal int, row int, col int) bool {
 		if board.ValidPos(i, freeRow, freeCol) {
 			// fmt.Printf("Valid! row:%d, col:%d, val:%d \n", freeRow, freeCol, i)
 			board.BoardArray[freeRow][freeCol] = i
-			if board.SolveBoard(i, freeRow, freeCol) {
+			if board.SolveBoard(i, freeRow, freeCol + 1) {
 				return true
 			}
 			board.BoardArray[freeRow][freeCol] = 0
@@ -97,9 +97,9 @@ func (board *Board) FreePos() []int {
 
 // Check if cellVal can be placed in the row rowN
 // Returns true if valid pos
-func (board *Board) ValidPosInRow(cellVal int, rowN int) bool {
-	for i := 0; i < len(board.BoardArray[rowN]); i++ {
-		currentValue := board.BoardArray[rowN][i]
+func (board *Board) ValidPosInRow(cellVal int, row int) bool {
+	for i := 0; i < len(board.BoardArray[row]); i++ {
+		currentValue := board.BoardArray[row][i]
 		if currentValue == cellVal {
 			return false
 		}
@@ -109,9 +109,9 @@ func (board *Board) ValidPosInRow(cellVal int, rowN int) bool {
 
 // Check if cellVal can be placed in the column colN
 // Returns true if valid pos
-func (board *Board) ValidPosInCol(cellVal int, colN int) bool {
-	for i := 0; i < len(board.BoardArray[colN]); i++ {
-		currentValue := board.BoardArray[i][colN]
+func (board *Board) ValidPosInCol(cellVal int, col int) bool {
+	for i := 0; i < len(board.BoardArray[col]); i++ {
+		currentValue := board.BoardArray[i][col]
 		if currentValue == cellVal {
 			return false
 		}
@@ -143,6 +143,10 @@ func (board *Board) ValidPosInSubGrid(cellVal int, colN int, rowN int) bool {
 // Prints board nicely
 func (board *Board) PrintBoard() {
   for row := 0; row < len(board.BoardArray); row++{
-    fmt.Println(board.BoardArray[row])
+    fmt.Printf("row:%d \t", row)
+    for col := 0; col < len(board.BoardArray[row]); col++{
+      fmt.Printf("%d|", board.BoardArray[row][col])
+    }
+    fmt.Println()
   }
 }
