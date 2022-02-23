@@ -134,7 +134,15 @@ func TestInValidInBoardSubGrid(t *testing.T) {
 func TestValidBoard(t *testing.T) {
 	grid := [9][9]int{}
 	board := Board{BoardArray: grid}
-	board.SolveBoard(1, 0, 0)
+	board.GenerateBoard(1, 0, 0)
+
+  // Go through all rows check if valid row
+  for i := 0; i < len(board.BoardArray); i++{
+    row := board.BoardArray[i]
+    if !uniqueInRow(row){
+      t.Errorf("Invalid In row: %v", row)
+    }
+  }
 
 	board.PrintBoard()
 
@@ -147,7 +155,8 @@ func contains(s []int, e int) bool {
 	}
 	return false
 }
-func uniqueInRow(row []int) bool {
+
+func uniqueInRow(row [9]int) bool {
 	seenInRow := []int{}
 	for i := 0; i < len(row); i++ {
 		currentVal := row[i]
@@ -156,6 +165,21 @@ func uniqueInRow(row []int) bool {
 			return false
 		} else {
 			seenInRow = append(seenInRow, currentVal)
+		}
+	}
+  fmt.Printf("Seen: %v \n \n", seenInRow)
+	return true
+}
+
+func uniqueInCol(col [9]int) bool {
+	seenInCol := []int{}
+	for i := 0; i < len(col); i++ {
+		currentVal := col[i]
+
+		if contains(seenInCol, currentVal) {
+			return false
+		} else {
+			seenInCol = append(seenInCol, currentVal)
 		}
 	}
 	return true
