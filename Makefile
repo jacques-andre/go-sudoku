@@ -5,4 +5,4 @@ run:
 	go run game.go
 
 test:
-	go test -v
+	go test -v ./...
