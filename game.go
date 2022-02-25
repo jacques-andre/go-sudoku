@@ -1,18 +1,34 @@
 package main
 
 import (
-	"sudoku/board"
-	"time"
+  "fmt"
   "math/rand"
+  "sudoku/board"
+  "time"
 )
 
 func main() {
-	grid := [9][9]int{}
+  grid := [9][9]int{}
 
-	rand.Seed(time.Now().UnixNano())
-	board := board.Board{BoardArray: grid}
-	board.GenerateBoard(0, 0)
+  rand.Seed(time.Now().UnixNano())
+  board := board.Board{SolvedBoard: grid, UserBoard: grid}
+  board.GenerateBoard(0, 0)
+  board.GenerateUserBoard(20)
 
-	board.PrintBoard()
+  count := 0
+
+  for row := 0; row < len(board.UserBoard); row++{
+    for col := 0; col < len(board.UserBoard[row]); col++{
+      fmt.Printf("%d|", board.UserBoard[row][col])
+      if board.UserBoard[row][col] == 0{
+        count++
+      }
+    }
+    fmt.Println()
+  }
+
+  fmt.Println(count)
+
+  board.PrintBoard()
 
 }
