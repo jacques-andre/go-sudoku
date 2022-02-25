@@ -28,7 +28,6 @@ Generate **all** possible solutions, then validate **all** possible solutions.
   - Finished a row/col. > Move on
 
 
-
 ### Dancing Links
 
 

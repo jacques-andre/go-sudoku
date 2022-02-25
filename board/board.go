@@ -3,7 +3,6 @@ package board
 import (
 	"fmt"
 	"math/rand"
-	"time"
 )
 
 type Board struct {
@@ -11,7 +10,7 @@ type Board struct {
 }
 
 // Creates a valid random BoardArray
-func (board *Board) GenerateBoard(cellVal int, row int, col int) bool {
+func (board *Board) GenerateBoard(row int, col int) bool {
 	// get the next available pos on board
 	freePos := board.FreePos()
 	if freePos == nil {
@@ -24,19 +23,22 @@ func (board *Board) GenerateBoard(cellVal int, row int, col int) bool {
 
 	// generate random number
 	randNum := rand.Intn(10-1) + 1
-	rand.Seed(time.Now().UnixNano())
 
-	for i := 0; i <= 8; i++ {
+	if board.ValidPos(randNum, freeRow, freeCol) {
+		// fmt.Printf("Valid: row:%d,col:%d,val:%d,mark:%d,\n", freeRow, freeCol, randNum)
+		board.BoardArray[freeRow][freeCol] = randNum
 		// board.PrintBoard()
-		// fmt.Printf("Checking: row:%d,col:%d,val:%d \n", freeRow, freeCol, randNum)
-		if board.ValidPos(randNum, freeRow, freeCol) {
-			// fmt.Printf("Valid! row:%d, col:%d, val:%d \n", freeRow, freeCol, randNum)
-			board.BoardArray[freeRow][freeCol] = randNum
-			if board.GenerateBoard(randNum, freeRow, freeCol + 1) {
+		// fmt.Scanln()
+		// fmt.Println("----")
+
+		// re-generate a random number 8 times before back track
+		for i := 0; i <= 8; i++ {
+			// fmt.Printf("Checking: row:%d,col:%d,val:%d,i:%d\n", freeRow, freeCol, randNum, i)
+			if board.GenerateBoard(freeRow, freeCol+1) {
 				return true
 			}
-			board.BoardArray[freeRow][freeCol] = 0
 		}
+		board.BoardArray[freeRow][freeCol] = 0
 	}
 	return false
 }
@@ -53,13 +55,14 @@ func (board *Board) SolveBoard(cellVal int, row int, col int) bool {
 	freeRow := freePos[0]
 	freeCol := freePos[1]
 
+  // check every possibility at current square
 	for i := 1; i <= 9; i++ {
 		// board.PrintBoard()
 		// fmt.Printf("Checking: row:%d,col:%d,val:%d \n", freeRow, freeCol, i)
 		if board.ValidPos(i, freeRow, freeCol) {
 			// fmt.Printf("Valid! row:%d, col:%d, val:%d \n", freeRow, freeCol, i)
 			board.BoardArray[freeRow][freeCol] = i
-			if board.SolveBoard(i, freeRow, freeCol + 1) {
+			if board.SolveBoard(i, freeRow, freeCol+1) {
 				return true
 			}
 			board.BoardArray[freeRow][freeCol] = 0
@@ -142,11 +145,11 @@ func (board *Board) ValidPosInSubGrid(cellVal int, colN int, rowN int) bool {
 // Helper Method:
 // Prints board nicely
 func (board *Board) PrintBoard() {
-  for row := 0; row < len(board.BoardArray); row++{
-    fmt.Printf("row:%d \t", row)
-    for col := 0; col < len(board.BoardArray[row]); col++{
-      fmt.Printf("%d|", board.BoardArray[row][col])
-    }
-    fmt.Println()
-  }
+	for row := 0; row < len(board.BoardArray); row++ {
+		fmt.Printf("row:%d \t", row)
+		for col := 0; col < len(board.BoardArray[row]); col++ {
+			fmt.Printf("%d|", board.BoardArray[row][col])
+		}
+		fmt.Println()
+	}
 }

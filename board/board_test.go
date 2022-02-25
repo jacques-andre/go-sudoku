@@ -131,22 +131,22 @@ func TestInValidInBoardSubGrid(t *testing.T) {
 }
 
 // TODO
-func TestValidBoard(t *testing.T) {
-	grid := [9][9]int{}
-	board := Board{BoardArray: grid}
-	board.GenerateBoard(1, 0, 0)
+// func TestValidBoard(t *testing.T) {
+// 	grid := [9][9]int{}
+// 	board := Board{BoardArray: grid}
+// 	board.GenerateBoard(1, 0)
 
-  // Go through all rows check if valid row
-  for i := 0; i < len(board.BoardArray); i++{
-    row := board.BoardArray[i]
-    if !uniqueInRow(row){
-      t.Errorf("Invalid In row: %v", row)
-    }
-  }
+// 	// Go through all rows check if valid row
+// 	for i := 0; i < len(board.BoardArray); i++ {
+// 		row := board.BoardArray[i]
+// 		if !uniqueInRow(row) {
+// 			t.Errorf("Invalid In row: %v", row)
+// 		}
+// 	}
 
-	board.PrintBoard()
+// 	board.PrintBoard()
 
-}
+// }
 func contains(s []int, e int) bool {
 	for _, a := range s {
 		if a == e {
@@ -167,7 +167,7 @@ func uniqueInRow(row [9]int) bool {
 			seenInRow = append(seenInRow, currentVal)
 		}
 	}
-  fmt.Printf("Seen: %v \n \n", seenInRow)
+	fmt.Printf("Seen: %v \n \n", seenInRow)
 	return true
 }
 
