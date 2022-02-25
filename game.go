@@ -15,9 +15,11 @@ func main() {
   board.GenerateBoard(0, 0)
   board.GenerateUserBoard(20)
 
+  // count 0 found in UserBoard
   count := 0
 
-  fmt.Printf("User board:  \n")
+  fmt.Printf("User board:\n")
+  // Print UserBoard
   for row := 0; row < len(board.UserBoard); row++{
     for col := 0; col < len(board.UserBoard[row]); col++{
       fmt.Printf("%d|", board.UserBoard[row][col])
@@ -27,7 +29,7 @@ func main() {
     }
     fmt.Println()
   }
-  fmt.Printf("zeros:%d \n", count)
+  fmt.Printf("zeros:%d \n\n", count)
 
   fmt.Printf("Solved board: \n")
   board.PrintBoard()
