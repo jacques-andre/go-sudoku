@@ -7,7 +7,7 @@ import (
 
 func TestValidInBoardRow(t *testing.T) {
 	grid := [9][9]int{}
-	board := Board{BoardArray: grid}
+	board := Board{SolvedBoard: grid}
 
 	// Test vars
 	valueN := 9
@@ -16,7 +16,7 @@ func TestValidInBoardRow(t *testing.T) {
 	got := board.ValidPosInRow(valueN, rowN)
 	want := true
 
-	fmt.Printf("Row:%v, checking:%d", board.BoardArray[rowN], valueN)
+	fmt.Printf("Row:%v, checking:%d", board.SolvedBoard[rowN], valueN)
 
 	if got != want {
 		t.Errorf("Failed! Got:%t, want:%t", got, want)
@@ -29,7 +29,7 @@ func TestInValidInBoardRow(t *testing.T) {
 	// Make the first value 1,
 	// Testing if we can overwrite this (false)
 	grid[0] = [9]int{1, 0, 0, 0, 0, 0, 0, 0, 0}
-	board := Board{BoardArray: grid}
+	board := Board{SolvedBoard: grid}
 
 	// Test vars
 	valueN := 1
@@ -38,7 +38,7 @@ func TestInValidInBoardRow(t *testing.T) {
 	got := board.ValidPosInRow(valueN, rowN)
 	want := false
 
-	fmt.Printf("Row:%v, checking:%d", board.BoardArray[rowN], valueN)
+	fmt.Printf("Row:%v, checking:%d", board.SolvedBoard[rowN], valueN)
 
 	if got != want {
 		t.Errorf("Failed! Got:%t, want:%t", got, want)
@@ -47,7 +47,7 @@ func TestInValidInBoardRow(t *testing.T) {
 
 func TestValidInBoardCol(t *testing.T) {
 	grid := [9][9]int{}
-	board := Board{BoardArray: grid}
+	board := Board{SolvedBoard: grid}
 	// Test vars
 	valueN := 7
 	colN := 0
@@ -69,7 +69,7 @@ func TestInValidInBoardCol(t *testing.T) {
 	// Make the first value 1,
 	// Testing if we can overwrite this (false)
 	grid[0] = [9]int{1, 0, 0, 0, 0, 0, 0, 0, 0}
-	board := Board{BoardArray: grid}
+	board := Board{SolvedBoard: grid}
 
 	// Test vars
 	valueN := 1
@@ -88,7 +88,7 @@ func TestInValidInBoardCol(t *testing.T) {
 
 func TestValidInBoardSubGrid(t *testing.T) {
 	grid := [9][9]int{}
-	board := Board{BoardArray: grid}
+	board := Board{SolvedBoard: grid}
 
 	// Test vars
 	valueN := 9
@@ -112,12 +112,15 @@ func TestInValidInBoardSubGrid(t *testing.T) {
 	// Make the first value 1,
 	// Testing if we can overwrite this (false)
 	grid[0] = [9]int{1, 0, 0, 0, 0, 0, 0, 0, 0}
-	board := Board{BoardArray: grid}
+	board := Board{SolvedBoard: grid}
 
 	// Test vars
 	valueN := 1
 	colN := 0
 	rowN := 0
+
+	board.PrintBoard()
+	fmt.Printf("Checking:%d,col:%d,row:%d \n", valueN, colN, rowN)
 
 	got := board.ValidPosInSubGrid(valueN, colN, rowN)
 	want := false
@@ -125,7 +128,7 @@ func TestInValidInBoardSubGrid(t *testing.T) {
 	if got != want {
 		t.Errorf("Failed! Got:%t, want:%t", got, want)
 		board.PrintBoard()
-		checkingPos := board.BoardArray[rowN][colN]
+		checkingPos := board.SolvedBoard[rowN][colN]
 		fmt.Printf("checkingPos:%d", checkingPos)
 	}
 }
@@ -133,12 +136,12 @@ func TestInValidInBoardSubGrid(t *testing.T) {
 // TODO
 // func TestValidBoard(t *testing.T) {
 // 	grid := [9][9]int{}
-// 	board := Board{BoardArray: grid}
+// 	board := Board{SolvedBoard: grid}
 // 	board.GenerateBoard(1, 0)
 
 // 	// Go through all rows check if valid row
-// 	for i := 0; i < len(board.BoardArray); i++ {
-// 		row := board.BoardArray[i]
+// 	for i := 0; i < len(board.SolvedBoard); i++ {
+// 		row := board.SolvedBoard[i]
 // 		if !uniqueInRow(row) {
 // 			t.Errorf("Invalid In row: %v", row)
 // 		}
