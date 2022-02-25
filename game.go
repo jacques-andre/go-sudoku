@@ -17,6 +17,7 @@ func main() {
 
   count := 0
 
+  fmt.Printf("User board:  \n")
   for row := 0; row < len(board.UserBoard); row++{
     for col := 0; col < len(board.UserBoard[row]); col++{
       fmt.Printf("%d|", board.UserBoard[row][col])
@@ -26,9 +27,9 @@ func main() {
     }
     fmt.Println()
   }
+  fmt.Printf("zeros:%d \n", count)
 
-  fmt.Println(count)
-
+  fmt.Printf("Solved board: \n")
   board.PrintBoard()
 
 }
