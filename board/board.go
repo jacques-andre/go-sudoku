@@ -37,7 +37,7 @@ func (board *Board) GenerateUserBoard(blanks int) {
 // Creates a valid random SolvedBoard
 func (board *Board) GenerateBoard(row int, col int) bool {
 	// get the next available pos on board
-	freePos := board.FreePos()
+	freePos := board.FreePos(board.SolvedBoard)
 	if freePos == nil {
 		// no more positions, done
 		return true
@@ -49,7 +49,7 @@ func (board *Board) GenerateBoard(row int, col int) bool {
 	// generate random number
 	randNum := rand.Intn(10-1) + 1
 
-	if board.ValidPos(randNum, freeRow, freeCol) {
+	if board.ValidPos(randNum, freeRow, freeCol, board.SolvedBoard) {
 		// fmt.Printf("Valid: row:%d,col:%d,val:%d,mark:%d,\n", freeRow, freeCol, randNum)
 		board.SolvedBoard[freeRow][freeCol] = randNum
 		// board.PrintBoard()
@@ -68,10 +68,10 @@ func (board *Board) GenerateBoard(row int, col int) bool {
 	return false
 }
 
-// Solves SolvedBoard (existing board)
+// Solves UserBoard (existing board)
 func (board *Board) SolveBoard(cellVal int, row int, col int) bool {
 	// get the next available pos on board
-	freePos := board.FreePos()
+	freePos := board.FreePos(board.UserBoard)
 	if freePos == nil {
 		// no more positions, done
 		return true
@@ -84,13 +84,13 @@ func (board *Board) SolveBoard(cellVal int, row int, col int) bool {
 	for i := 1; i <= 9; i++ {
 		// board.PrintBoard()
 		// fmt.Printf("Checking: row:%d,col:%d,val:%d \n", freeRow, freeCol, i)
-		if board.ValidPos(i, freeRow, freeCol) {
+		if board.ValidPos(i, freeRow, freeCol, board.UserBoard) {
 			// fmt.Printf("Valid! row:%d, col:%d, val:%d \n", freeRow, freeCol, i)
-			board.SolvedBoard[freeRow][freeCol] = i
+			board.UserBoard[freeRow][freeCol] = i
 			if board.SolveBoard(i, freeRow, freeCol+1) {
 				return true
 			}
-			board.SolvedBoard[freeRow][freeCol] = 0
+			board.UserBoard[freeRow][freeCol] = 0
 		}
 	}
 	return false
@@ -98,10 +98,12 @@ func (board *Board) SolveBoard(cellVal int, row int, col int) bool {
 
 // Checks all valid pos funcs
 // Returns true if valid
-func (board *Board) ValidPos(cellVal int, row int, col int) bool {
-	isValidInRow := board.ValidPosInRow(cellVal, row)
-	isValidInCol := board.ValidPosInCol(cellVal, col)
-	isValidInSubGrid := board.ValidPosInSubGrid(cellVal, col, row)
+func (board *Board) ValidPos(cellVal int, row int, col int, boardArray [9][9]int) bool {
+	isValidInRow := board.ValidPosInRow(cellVal, row, boardArray)
+	isValidInCol := board.ValidPosInCol(cellVal, col, boardArray)
+	isValidInSubGrid := board.ValidPosInSubGrid(cellVal, col, row, boardArray)
+
+	fmt.Printf("row:%v, col:%v, subgrid:%v \n", isValidInRow, isValidInCol, isValidInSubGrid)
 
 	if isValidInRow && isValidInCol && isValidInSubGrid {
 		return true
@@ -109,12 +111,24 @@ func (board *Board) ValidPos(cellVal int, row int, col int) bool {
 	return false
 }
 
+func (board *Board) ValidUserPos(cellVal int, row int, col int, boardArray [9][9]int) bool {
+	// answer to the cell the user chose
+	validInputCell := board.SolvedBoard[row][col]
+
+	if board.ValidPos(cellVal, row, col, board.UserBoard) {
+		if cellVal == validInputCell {
+			return true
+		}
+	}
+	return false
+}
+
 // Checks next free pos on board
 // Returns [row,col] of free pos
-func (board *Board) FreePos() []int {
-	for row := 0; row < len(board.SolvedBoard); row++ {
-		for col := 0; col < len(board.SolvedBoard[row]); col++ {
-			if board.SolvedBoard[row][col] == 0 {
+func (board *Board) FreePos(boardArray [9][9]int) []int {
+	for row := 0; row < len(boardArray); row++ {
+		for col := 0; col < len(boardArray[row]); col++ {
+			if boardArray[row][col] == 0 {
 				validPos := []int{row, col}
 				return validPos
 			}
@@ -125,9 +139,9 @@ func (board *Board) FreePos() []int {
 
 // Check if cellVal can be placed in the row rowN
 // Returns true if valid pos
-func (board *Board) ValidPosInRow(cellVal int, row int) bool {
-	for i := 0; i < len(board.SolvedBoard[row]); i++ {
-		currentValue := board.SolvedBoard[row][i]
+func (board *Board) ValidPosInRow(cellVal int, row int, boardArray [9][9]int) bool {
+	for i := 0; i < len(boardArray[row]); i++ {
+		currentValue := boardArray[row][i]
 		if currentValue == cellVal {
 			return false
 		}
@@ -137,9 +151,9 @@ func (board *Board) ValidPosInRow(cellVal int, row int) bool {
 
 // Check if cellVal can be placed in the column colN
 // Returns true if valid pos
-func (board *Board) ValidPosInCol(cellVal int, col int) bool {
-	for i := 0; i < len(board.SolvedBoard[col]); i++ {
-		currentValue := board.SolvedBoard[i][col]
+func (board *Board) ValidPosInCol(cellVal int, col int, boardArray [9][9]int) bool {
+	for i := 0; i < len(boardArray[col]); i++ {
+		currentValue := boardArray[i][col]
 		if currentValue == cellVal {
 			return false
 		}
@@ -149,7 +163,7 @@ func (board *Board) ValidPosInCol(cellVal int, col int) bool {
 
 // Check if cellVal can be placed in the 3x3 subgrid
 // Returns true if valid pos
-func (board *Board) ValidPosInSubGrid(cellVal int, colN int, rowN int) bool {
+func (board *Board) ValidPosInSubGrid(cellVal int, colN int, rowN int, boardArray [9][9]int) bool {
 	rowStart := (rowN / 3) * 3
 	colStart := (colN / 3) * 3
 
@@ -157,7 +171,7 @@ func (board *Board) ValidPosInSubGrid(cellVal int, colN int, rowN int) bool {
 	// check if any values are equal to cellVal
 	for row := rowStart; row < rowStart+3; row++ {
 		for col := colStart; col < colStart+3; col++ {
-			subGridCell := board.SolvedBoard[row][col]
+			subGridCell := boardArray[row][col]
 			if subGridCell == cellVal {
 				return false
 			}
@@ -169,11 +183,11 @@ func (board *Board) ValidPosInSubGrid(cellVal int, colN int, rowN int) bool {
 
 // Helper Method:
 // Prints board nicely
-func (board *Board) PrintBoard() {
-	for row := 0; row < len(board.SolvedBoard); row++ {
+func (board *Board) PrintBoard(boardArray [9][9]int) {
+	for row := 0; row < len(boardArray); row++ {
 		fmt.Printf("row:%d \t", row)
-		for col := 0; col < len(board.SolvedBoard[row]); col++ {
-			fmt.Printf("%d|", board.SolvedBoard[row][col])
+		for col := 0; col < len(boardArray[row]); col++ {
+			fmt.Printf("%d|", boardArray[row][col])
 		}
 		fmt.Println()
 	}
