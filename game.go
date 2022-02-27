@@ -13,29 +13,53 @@ func main() {
 	rand.Seed(time.Now().UnixNano())
 	board := board.Board{SolvedBoard: grid, UserBoard: grid}
 	board.GenerateBoard(0, 0)
-	board.GenerateUserBoard(70)
+	board.GenerateUserBoard(2)
 
-  // holds user selection
-  var inputRow int
-  var inputCol int
+	fmt.Println("User:")
+	printBoard(board.UserBoard)
 
+	fmt.Println("Solved:")
+	board.PrintBoard(board.SolvedBoard)
 
-  for row := 0; row < len(board.UserBoard); row++{
-    for col := 0; col < len(board.UserBoard[row]); col++{
-      fmt.Printf("%d|", board.UserBoard[row][col])
-    }
-    fmt.Println()
-  }
+	for board.FreePos(board.UserBoard) != nil {
+		// holds user selection
+		var inputRow int
+		var inputCol int
+		var inputVal int
 
+		fmt.Printf("Choose a row:\n")
+		fmt.Scanln(&inputRow)
 
+		fmt.Printf("Choose a col:\n")
+		fmt.Scanln(&inputCol)
 
-  fmt.Printf("Choose a row:\n")
-  fmt.Scanln(&inputRow)
+		fmt.Printf("Choose a val:\n")
+		fmt.Scanln(&inputVal)
 
-  fmt.Printf("Choose a col:\n")
-  fmt.Scanln(&inputCol)
+		// check if the pos from user input is correct
+		if board.ValidUserPos(inputVal, inputRow, inputCol, board.UserBoard) {
+			fmt.Println("valid")
+			board.UserBoard[inputRow][inputCol] = inputVal
+			// board.PrintBoard(board.UserBoard)
+			printBoard(board.UserBoard)
+		} else {
+			fmt.Println("invalid")
+		}
+	}
+	fmt.Println("Done!")
 
-  fmt.Printf("You choose row:%v, col:%v, val:%d \n", inputRow, inputCol, board.UserBoard[inputRow][inputCol])
-  board.PrintBoard()
+}
 
+func printBoard(grid [9][9]int) {
+	for row := 0; row < len(grid); row++ {
+		fmt.Printf("row:%d \t", row)
+		for col := 0; col < len(grid[row]); col++ {
+			if grid[row][col] == 0 {
+				fmt.Printf("|*%d*|", grid[row][col])
+			} else {
+				fmt.Printf("%d|", grid[row][col])
+			}
+		}
+		fmt.Println()
+	}
 }
