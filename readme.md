@@ -3,7 +3,7 @@
 
 ## Docker:
 ```
-docker build -t go-sudoku . && docker run --name sudoku-container -it go-sudoku
+docker build -t go-sudoku . && clear && docker run --name sudoku-container -it go-sudoku
 ```
 Build docker image and run in attached mode (for user input)
 
