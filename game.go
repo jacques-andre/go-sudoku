@@ -34,11 +34,16 @@ func main() {
 		var inputCol int
 		var inputVal int
 
-		// show zeros coords on UserBoard, helps with debugging
+		// DEBUG: show zeros coords on UserBoard
 		// Ex: [0,4],[3,2]
 		zeros := getZeros(board.UserBoard)
 		for i, v := range zeros {
-			fmt.Printf("zeros:i:%d,v:%v \n", i, v)
+			// get the answer of where the blank cell is
+			zeroRow := zeros[i][0]
+			zeroCol := zeros[i][1]
+			answer := board.SolvedBoard[zeroRow][zeroCol]
+
+			fmt.Printf("zeros:i:%d,v:%v,answer:%v \n", i, v, answer)
 		}
 
 		// take user input
