@@ -34,7 +34,7 @@ func main() {
 		var inputCol int
 		var inputVal int
 
-		// DEBUG: show zeros coords on UserBoard
+		// DEBUG: show zeros coords & answer on UserBoard
 		// Ex: [0,4],[3,2]
 		zeros := getZeros(board.UserBoard)
 		for i, v := range zeros {
@@ -43,7 +43,7 @@ func main() {
 			zeroCol := zeros[i][1]
 			answer := board.SolvedBoard[zeroRow][zeroCol]
 
-			fmt.Printf("zeros:i:%d,v:%v,answer:%v \n", i, v, answer)
+			fmt.Printf("DEBUG: Found blank pos at:%v,answer:%d \n", v, answer)
 		}
 
 		// take user input

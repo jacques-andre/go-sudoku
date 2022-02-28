@@ -103,7 +103,7 @@ func (board *Board) ValidPos(cellVal int, row int, col int, boardArray [9][9]int
 	isValidInCol := board.ValidPosInCol(cellVal, col, boardArray)
 	isValidInSubGrid := board.ValidPosInSubGrid(cellVal, col, row, boardArray)
 
-	fmt.Printf("row:%v, col:%v, subgrid:%v \n", isValidInRow, isValidInCol, isValidInSubGrid)
+	// fmt.Printf("DEBUG: row:%v, col:%v, subgrid:%v \n", isValidInRow, isValidInCol, isValidInSubGrid)
 
 	if isValidInRow && isValidInCol && isValidInSubGrid {
 		return true
