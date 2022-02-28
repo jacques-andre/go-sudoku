@@ -74,9 +74,10 @@ func getZeros(boardArray [9][9]int) [][]int {
 
 	for row := 0; row < len(boardArray); row++ {
 		for col := 0; col < len(boardArray[row]); col++ {
-			coord := [][]int{{row, col}}
+			currentCoord := [][]int{{row, col}}
+
 			if boardArray[row][col] == 0 {
-				seen = append(seen, coord...)
+				seen = append(seen, currentCoord...)
 			}
 		}
 	}
