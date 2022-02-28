@@ -29,7 +29,7 @@ func main() {
 	fmt.Println("Solved Board:")
 	board.PrintBoard(board.SolvedBoard)
 
-	// while there are no more 0's in the userboard,
+	// while there are more 0's in the userboard,
 	// keep prompting
 	for board.FreePos(board.UserBoard) != nil {
 		// holds user input
