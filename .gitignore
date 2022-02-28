@@ -24,3 +24,5 @@ run_docs.sh
 
 # Go workspace file
 go.work
+
+go.sum
