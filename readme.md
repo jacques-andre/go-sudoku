@@ -1,8 +1,14 @@
 ![Go build](https://github.com/jacques-andre/go-sudoku/actions/workflows/go.yml/badge.svg)
 
 
-## Solving Approaches:
+## Docker:
+```
+docker build -t go-sudoku . && docker run --name sudoku-container -it go-sudoku
+```
+Build docker image and run in attached mode (for user input)
 
+
+## Solving Approaches:
 ### Brute force:
 Generate **all** possible solutions, then validate **all** possible solutions.
 - Slow
@@ -26,8 +32,8 @@ Generate **all** possible solutions, then validate **all** possible solutions.
   - No more free positions on the board
 
 ### Dancing Links
-
 ....
+
 ## Resources:
 - https://www.youtube.com/watch?v=JzONv5kaPJM
 - https://en.wikipedia.org/wiki/NP-completeness
