@@ -4,12 +4,10 @@
 ## Solving Approaches:
 
 ### Brute force:
-
 Generate **all** possible solutions, then validate **all** possible solutions.
 - Slow
 
 ### Backtracking:
-
 3 Key concepts:
 - Choice
 - Constraint
@@ -25,13 +23,9 @@ Generate **all** possible solutions, then validate **all** possible solutions.
 
 **Goal:**
 - Reached Base cases:
-  - Finished a row/col. > Move on
-
+  - No more free positions on the board
 
 ### Dancing Links
-
-
-### Depth first search
 
 ....
 ## Resources:
