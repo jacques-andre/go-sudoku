@@ -5,7 +5,9 @@ import (
 	"testing"
 )
 
+// Test a VALID pos in row
 func TestValidInBoardRow(t *testing.T) {
+	// Blank board, should be able to place anywhere without failing
 	grid := [9][9]int{}
 	board := Board{SolvedBoard: grid}
 
@@ -23,6 +25,7 @@ func TestValidInBoardRow(t *testing.T) {
 	}
 }
 
+// Test a INVALID pos in row
 func TestInValidInBoardRow(t *testing.T) {
 	grid := [9][9]int{}
 
@@ -45,9 +48,12 @@ func TestInValidInBoardRow(t *testing.T) {
 	}
 }
 
+// Test a VALID pos in a col
 func TestValidInBoardCol(t *testing.T) {
+	// Blank board, should be able to place anywhere without failing
 	grid := [9][9]int{}
 	board := Board{SolvedBoard: grid}
+
 	// Test vars
 	valueN := 7
 	colN := 0
@@ -63,6 +69,7 @@ func TestValidInBoardCol(t *testing.T) {
 	}
 }
 
+// Test a INVALID pos in a col
 func TestInValidInBoardCol(t *testing.T) {
 	grid := [9][9]int{}
 
@@ -86,7 +93,9 @@ func TestInValidInBoardCol(t *testing.T) {
 	}
 }
 
+// Test a VALID pos in subgrid (3x3)
 func TestValidInBoardSubGrid(t *testing.T) {
+	// Blank board, should be able to place anywhere without failing
 	grid := [9][9]int{}
 	board := Board{SolvedBoard: grid}
 
@@ -106,6 +115,7 @@ func TestValidInBoardSubGrid(t *testing.T) {
 	}
 }
 
+// Test a INVALID pos in a subgrid (3x3)
 func TestInValidInBoardSubGrid(t *testing.T) {
 	grid := [9][9]int{}
 
@@ -131,66 +141,4 @@ func TestInValidInBoardSubGrid(t *testing.T) {
 		checkingPos := board.SolvedBoard[rowN][colN]
 		fmt.Printf("checkingPos:%d", checkingPos)
 	}
-}
-
-// TODO
-// func TestValidBoard(t *testing.T) {
-// 	grid := [9][9]int{}
-// 	board := Board{SolvedBoard: grid}
-// 	board.GenerateBoard(0, 0)
-
-// 	for row := 0; row < len(board.SolvedBoard); row++ {
-// 		seenInRow := []int{}
-// 		seenInCol := []int{}
-
-// 		for col := 0; col < len(board.SolvedBoard[row]); col++ {
-// 			currentRowVal := board.SolvedBoard[row][col]
-// 			currentColVal := board.SolvedBoard[col][row]
-
-// 			// check if seen
-// 			if contains(seenInRow, currentRowVal) {
-// 				t.Errorf("Failed! seen in row")
-// 			}
-// 			if contains(seenInCol, currentColVal) {
-// 				t.Errorf("Failed! seen in col")
-// 			}
-// 		}
-// 	}
-// }
-func contains(s []int, e int) bool {
-	for _, a := range s {
-		if a == e {
-			return true
-		}
-	}
-	return false
-}
-
-func uniqueInRow(row [9]int) bool {
-	seenInRow := []int{}
-	for i := 0; i < len(row); i++ {
-		currentVal := row[i]
-
-		if contains(seenInRow, currentVal) {
-			return false
-		} else {
-			seenInRow = append(seenInRow, currentVal)
-		}
-	}
-	fmt.Printf("Seen: %v \n \n", seenInRow)
-	return true
-}
-
-func uniqueInCol(col [9]int) bool {
-	seenInCol := []int{}
-	for i := 0; i < len(col); i++ {
-		currentVal := col[i]
-
-		if contains(seenInCol, currentVal) {
-			return false
-		} else {
-			seenInCol = append(seenInCol, currentVal)
-		}
-	}
-	return true
 }
