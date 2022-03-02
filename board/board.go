@@ -7,31 +7,11 @@ import (
 
 type Board struct {
 	SolvedBoard [9][9]int
-	UserBoard   [9][9]int
-}
 
-// Generates a playable board,
-// With blanks amount of spaces
-func (board *Board) GenerateUserBoard(blanks int) {
-	if board.SolvedBoard[0][0] == 0 {
-		panic("No solved board! Unable to generate UserBoard")
-	}
-
-	// set the UserBoard to the solved one,
-	// blank out some spaces on this UserBoard
-	// allows user to play the game
-	board.UserBoard = board.SolvedBoard
-
-	// go through userboard,
-	// blank out random choice
-	for i := 1; i <= blanks; {
-		randRow := rand.Intn(9)
-		randCol := rand.Intn(9)
-		if board.UserBoard[randRow][randCol] != 0 {
-			board.UserBoard[randRow][randCol] = 0
-			i++
-		}
-	}
+	// Usually generated from SolvedBoard,
+	// although user input is allowed for a new board,
+	// to be solved
+	UserBoard [9][9]int
 }
 
 // Creates a valid random SolvedBoard
@@ -43,6 +23,7 @@ func (board *Board) GenerateBoard(row int, col int) bool {
 		return true
 	}
 
+	// next available position
 	freeRow := freePos[0]
 	freeCol := freePos[1]
 
@@ -63,12 +44,40 @@ func (board *Board) GenerateBoard(row int, col int) bool {
 				return true
 			}
 		}
+		// backtrack
 		board.SolvedBoard[freeRow][freeCol] = 0
 	}
 	return false
 }
 
-// Solves UserBoard (existing board)
+// Generates a playable board,
+// With n amount of spaces
+func (board *Board) GenerateUserBoard(n int) {
+	// Need to make sure we have a solved board,
+	// before creating a user board
+	if board.SolvedBoard[0][0] == 0 {
+		panic("No solved board! Unable to generate UserBoard \n")
+	}
+
+	// set the UserBoard to the solved one,
+	// use this board to blank out spaces
+	board.UserBoard = board.SolvedBoard
+
+	// generate n amount of blanks randomly,
+	// on the UserBoard
+	for i := 1; i <= n; {
+		randRow := rand.Intn(9)
+		randCol := rand.Intn(9)
+		if board.UserBoard[randRow][randCol] != 0 {
+			board.UserBoard[randRow][randCol] = 0
+			i++
+		}
+	}
+}
+
+// Solves board.UserBoard (existing board),
+// Differs from GenerateBoard as it does not use random numbers,
+// when solving it attempts 1-9 in order
 func (board *Board) SolveBoard(cellVal int, row int, col int) bool {
 	// get the next available pos on board
 	freePos := board.FreePos(board.UserBoard)
@@ -90,6 +99,7 @@ func (board *Board) SolveBoard(cellVal int, row int, col int) bool {
 			if board.SolveBoard(i, freeRow, freeCol+1) {
 				return true
 			}
+			// backtrack
 			board.UserBoard[freeRow][freeCol] = 0
 		}
 	}
@@ -111,6 +121,9 @@ func (board *Board) ValidPos(cellVal int, row int, col int, boardArray [9][9]int
 	return false
 }
 
+// Checks if the given position by a user is valid,
+// based of ValidPos^ AND if SolvedBoard[row][col],
+// is the same as UserBoard[row][col]
 func (board *Board) ValidUserPos(cellVal int, row int, col int, boardArray [9][9]int) bool {
 	// answer to the cell the user chose
 	validInputCell := board.SolvedBoard[row][col]
@@ -124,7 +137,7 @@ func (board *Board) ValidUserPos(cellVal int, row int, col int, boardArray [9][9
 }
 
 // Checks next free pos on board
-// Returns [row,col] of free pos
+// Returns [row,col] of first found free pos
 func (board *Board) FreePos(boardArray [9][9]int) []int {
 	for row := 0; row < len(boardArray); row++ {
 		for col := 0; col < len(boardArray[row]); col++ {
