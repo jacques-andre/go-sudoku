@@ -70,6 +70,7 @@ func main() {
 			printCorrectSpaceBoard(board.UserBoard, inputRow, inputCol)
 		} else {
 			color.Red("Invalid!")
+			printInCorrectSpaceBoard(board.UserBoard, inputRow, inputCol, inputVal)
 		}
 		fmt.Println("-----") // formatting
 	}
@@ -116,6 +117,25 @@ func printCorrectSpaceBoard(boardArray [9][9]int, rowN int, colN int) {
 			if row == rowN && col == colN {
 				green := color.New(color.FgGreen).SprintFunc()
 				fmt.Printf("%s|", green(boardArray[row][col]))
+			} else if boardArray[row][col] == 0 {
+				yellow := color.New(color.FgYellow).SprintFunc()
+				fmt.Printf("%s|", yellow(boardArray[row][col]))
+			} else {
+				fmt.Printf("%d|", boardArray[row][col])
+			}
+		}
+		fmt.Println()
+	}
+}
+
+// Prints the board although rowN,colN will be highlighted red,
+// shows user where there invalid selection was
+func printInCorrectSpaceBoard(boardArray [9][9]int, rowN int, colN int, valueN int) {
+	for row := 0; row < len(boardArray); row++ {
+		for col := 0; col < len(boardArray[row]); col++ {
+			if row == rowN && col == colN {
+				red := color.New(color.FgRed).SprintFunc()
+				fmt.Printf("%s|", red(valueN))
 			} else if boardArray[row][col] == 0 {
 				yellow := color.New(color.FgYellow).SprintFunc()
 				fmt.Printf("%s|", yellow(boardArray[row][col]))
