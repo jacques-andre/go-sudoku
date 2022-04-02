@@ -6,143 +6,60 @@ import (
 	"sudoku/board"
 	"time"
 
-	"github.com/fatih/color"
+	"strconv"
+
+	"github.com/gdamore/tcell/v2"
+	"github.com/rivo/tview"
 )
 
 func main() {
-	// best practice
 	rand.Seed(time.Now().UnixNano())
 
-	// blank board
 	grid := [9][9]int{}
-	// init new board struct, both vars use blank board
 	board := board.Board{SolvedBoard: grid, UserBoard: grid}
-	// generate initial board for SolvedBoard
 	board.GenerateBoard(0, 0)
-	// UserBoard will copy SolvedBoard with n amount of zeros
-	board.GenerateUserBoard(2)
+	board.GenerateUserBoard(30)
 
-	fmt.Println("User Board:")
-	// board.PrintBoard(board.UserBoard)
-	printHighlightedSpacesBoard(board.UserBoard)
+	app := tview.NewApplication()
+	table := tview.NewTable().SetBorders(true)
+	test := tview.NewTextView()
 
-	fmt.Println("Solved Board:")
-	board.PrintBoard(board.SolvedBoard)
+	tviewGrid := tview.NewGrid().SetBorders(true)
 
-	// while there are more 0's in the userboard,
-	// keep prompting
-	for board.FreePos(board.UserBoard) != nil {
-		// holds user input
-		var inputRow int
-		var inputCol int
-		var inputVal int
+	tviewGrid.AddItem(table, 0, 0, 2, 1, 1, 1, true)
+	tviewGrid.AddItem(test, 0, 1, 2, 2, 2, 1, false)
 
-		// DEBUG: show zeros coords & answer on UserBoard
-		// Ex: [0,4],[3,2]
-		zeros := getZeros(board.UserBoard)
-		count := 0
-		for i, v := range zeros {
-			// get the answer of where the blank cell is
-			zeroRow := zeros[i][0]
-			zeroCol := zeros[i][1]
-			answer := board.SolvedBoard[zeroRow][zeroCol]
+	// render the board as a table
+	for row := 0; row < len(board.UserBoard); row++ {
+		for col := 0; col < len(board.UserBoard[row]); col++ {
+			currentBoardValue := board.UserBoard[row][col]
 
-			count++
-
-			fmt.Printf("DEBUG: Found blank pos at:%v,answer:%d \n", v, answer)
-		}
-		fmt.Printf("DEBUG: spaces left:%d \n", count)
-
-		// take user input
-		fmt.Printf("Choose a row:\n")
-		fmt.Scanln(&inputRow)
-		fmt.Printf("Choose a col:\n")
-		fmt.Scanln(&inputCol)
-		fmt.Printf("Choose a val:\n")
-		fmt.Scanln(&inputVal)
-
-		// check if the pos from user input is correct
-		if board.ValidUserPos(inputVal, inputRow, inputCol, board.UserBoard) {
-			color.Green("Valid! Placed this value on the board:")
-			// Update UserBoard with newly validated value
-			board.UserBoard[inputRow][inputCol] = inputVal
-			// board.PrintBoard(board.UserBoard)
-			printCorrectSpaceBoard(board.UserBoard, inputRow, inputCol)
-		} else {
-			color.Red("Invalid!")
-			printInCorrectSpaceBoard(board.UserBoard, inputRow, inputCol, inputVal)
-		}
-		fmt.Println("-----") // formatting
-	}
-	fmt.Println("Done!")
-}
-
-// helper method: allows for finding zeros quickly on UserBoard
-func getZeros(boardArray [9][9]int) [][]int {
-	seen := [][]int{}
-
-	for row := 0; row < len(boardArray); row++ {
-		for col := 0; col < len(boardArray[row]); col++ {
-			currentCoord := [][]int{{row, col}}
-
-			if boardArray[row][col] == 0 {
-				seen = append(seen, currentCoord...)
+			// Create a new cell with board value
+			newCell := tview.NewTableCell(strconv.Itoa(currentBoardValue))
+			// if cell is 0 show in different color
+			if currentBoardValue == 0 {
+				newCell = tview.NewTableCell(strconv.Itoa(currentBoardValue)).SetTextColor(tcell.ColorYellow)
 			}
-		}
-	}
-	return seen
-}
 
-// Prints the board although 0's will be highlighted,
-// yellow. Makes it easier to find 0's on board
-func printHighlightedSpacesBoard(boardArray [9][9]int) {
-	for row := 0; row < len(boardArray); row++ {
-		for col := 0; col < len(boardArray[row]); col++ {
-			if boardArray[row][col] == 0 {
-				yellow := color.New(color.FgYellow).SprintFunc()
-				fmt.Printf("%s|", yellow(boardArray[row][col]))
-			} else {
-				fmt.Printf("%d|", boardArray[row][col])
-			}
+			// add new cell to table
+			table.SetCell(row, col, newCell)
 		}
-		fmt.Println()
 	}
-}
 
-// Prints the board although rowN,colN will be highlighted green,
-// shows user where there valid selection was
-func printCorrectSpaceBoard(boardArray [9][9]int, rowN int, colN int) {
-	for row := 0; row < len(boardArray); row++ {
-		for col := 0; col < len(boardArray[row]); col++ {
-			if row == rowN && col == colN {
-				green := color.New(color.FgGreen).SprintFunc()
-				fmt.Printf("%s|", green(boardArray[row][col]))
-			} else if boardArray[row][col] == 0 {
-				yellow := color.New(color.FgYellow).SprintFunc()
-				fmt.Printf("%s|", yellow(boardArray[row][col]))
-			} else {
-				fmt.Printf("%d|", boardArray[row][col])
-			}
-		}
-		fmt.Println()
-	}
-}
+	table.SetSelectable(true, true)
 
-// Prints the board although rowN,colN will be highlighted red,
-// shows user where there invalid selection was
-func printInCorrectSpaceBoard(boardArray [9][9]int, rowN int, colN int, valueN int) {
-	for row := 0; row < len(boardArray); row++ {
-		for col := 0; col < len(boardArray[row]); col++ {
-			if row == rowN && col == colN {
-				red := color.New(color.FgRed).SprintFunc()
-				fmt.Printf("%s|", red(valueN))
-			} else if boardArray[row][col] == 0 {
-				yellow := color.New(color.FgYellow).SprintFunc()
-				fmt.Printf("%s|", yellow(boardArray[row][col]))
-			} else {
-				fmt.Printf("%d|", boardArray[row][col])
-			}
-		}
-		fmt.Println()
+	// when cell is selected, change color to red
+	table.SetSelectedFunc(func(row int, col int) {
+		selectedCell := table.GetCell(row, col)
+		selectedCell.SetTextColor(tcell.ColorRed)
+
+		test.SetText(fmt.Sprintf("You choose: row:%d,col:%d,value:%d", row, col, board.UserBoard[row][col]))
+	})
+
+	// run the app
+	err := app.SetRoot(tviewGrid, true).EnableMouse(true).Run()
+	if err != nil {
+		panic(err)
 	}
+
 }
