@@ -3,14 +3,15 @@ package board
 import (
 	"fmt"
 	"math/rand"
+
+	"github.com/fatih/color"
 )
 
 type Board struct {
 	SolvedBoard [9][9]int
 
-	// Usually generated from SolvedBoard,
-	// although user input is allowed for a new board,
-	// to be solved
+	// Board that the user will input into,
+	// this board will be the basis for SolvedBoard to solve on
 	UserBoard [9][9]int
 }
 
@@ -198,9 +199,44 @@ func (board *Board) ValidPosInSubGrid(cellVal int, colN int, rowN int, boardArra
 // Prints board nicely
 func (board *Board) PrintBoard(boardArray [9][9]int) {
 	for row := 0; row < len(boardArray); row++ {
-		// fmt.Printf("row:%d \t", row)
+		fmt.Printf("row:%d \t", row)
 		for col := 0; col < len(boardArray[row]); col++ {
 			fmt.Printf("%d|", boardArray[row][col])
+		}
+		fmt.Println()
+	}
+}
+
+// Prints the board although 0's will be highlighted,
+// yellow. Makes it easier to find 0's on board
+func (board *Board) PrintHighlightedSpacesBoard(boardArray [9][9]int) {
+	for row := 0; row < len(boardArray); row++ {
+		for col := 0; col < len(boardArray[row]); col++ {
+			if boardArray[row][col] == 0 {
+				yellow := color.New(color.FgYellow).SprintFunc()
+				fmt.Printf("%s|", yellow(boardArray[row][col]))
+			} else {
+				fmt.Printf("%d|", boardArray[row][col])
+			}
+		}
+		fmt.Println()
+	}
+}
+
+// Prints the board although rowN,colN will be highlighted green,
+// shows user where there valid selection was
+func (board *Board) PrintCorrectSpaceBoard(boardArray [9][9]int, rowN int, colN int) {
+	for row := 0; row < len(boardArray); row++ {
+		for col := 0; col < len(boardArray[row]); col++ {
+			if row == rowN && col == colN {
+				green := color.New(color.FgGreen).SprintFunc()
+				fmt.Printf("%s|", green(boardArray[row][col]))
+			} else if boardArray[row][col] == 0 {
+				yellow := color.New(color.FgYellow).SprintFunc()
+				fmt.Printf("%s|", yellow(boardArray[row][col]))
+			} else {
+				fmt.Printf("%d|", boardArray[row][col])
+			}
 		}
 		fmt.Println()
 	}

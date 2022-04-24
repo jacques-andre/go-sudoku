@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"sudoku/board"
+	"sudoku/utils"
 	"time"
 
 	"github.com/fatih/color"
@@ -13,119 +14,98 @@ func main() {
 	// best practice
 	rand.Seed(time.Now().UnixNano())
 
-	// blank board
+	// First ask the user if they would like to play,
+	// or replay a old game
+	fmt.Println("Press 1 for a new game, 2 for replaying a game")
+
+	// hold 1 or 2?
+	var userIntAnswer int
+	fmt.Scanln(&userIntAnswer)
+
+	if userIntAnswer == 1 {
+		newGame()
+	}
+	if userIntAnswer == 2 {
+		fmt.Println("yes2")
+	}
+
+}
+func newGame() {
+	// blank 2d slice
 	grid := [9][9]int{}
+
 	// init new board struct, both vars use blank board
-	board := board.Board{SolvedBoard: grid, UserBoard: grid}
+	mainBoard := board.Board{SolvedBoard: grid, UserBoard: grid}
+
 	// generate initial board for SolvedBoard
-	board.GenerateBoard(0, 0)
+	mainBoard.GenerateBoard(0, 0)
+
 	// UserBoard will copy SolvedBoard with n amount of zeros
-	board.GenerateUserBoard(2)
+	mainBoard.GenerateUserBoard(30)
 
-	fmt.Println("User Board:")
-	// board.PrintBoard(board.UserBoard)
-	printHighlightedSpacesBoard(board.UserBoard)
+	moveMap := map[int][9][9]int{}
+	moveMap[0] = mainBoard.UserBoard
+	currentMove := 1
 
-	fmt.Println("Solved Board:")
-	board.PrintBoard(board.SolvedBoard)
-
-	// while there are more 0's in the userboard,
-	// keep prompting
-	for board.FreePos(board.UserBoard) != nil {
-		// holds user input
-		var inputRow int
-		var inputCol int
-		var inputVal int
-
-		// DEBUG: show zeros coords & answer on UserBoard
-		// Ex: [0,4],[3,2]
-		zeros := getZeros(board.UserBoard)
-		count := 0
+	freePos := mainBoard.FreePos(mainBoard.UserBoard)
+	for freePos != nil {
+		// DEBUG
+		zeros := getZeros(mainBoard.UserBoard)
 		for i, v := range zeros {
 			// get the answer of where the blank cell is
 			zeroRow := zeros[i][0]
 			zeroCol := zeros[i][1]
-			answer := board.SolvedBoard[zeroRow][zeroCol]
+			answer := mainBoard.SolvedBoard[zeroRow][zeroCol]
+			_ = v
 
-			count++
-
-			fmt.Printf("DEBUG: Found blank pos at:%v,answer:%d \n", v, answer)
+			fmt.Printf("DEBUG: Found blank pos at row:%d,col:%d,ans:%d,\n", zeroRow, zeroCol, answer)
 		}
-		fmt.Printf("DEBUG: spaces left:%d \n", count)
 
-		// take user input
-		fmt.Printf("Choose a row:\n")
+		// Print the current board
+		fmt.Println("User Board:")
+		mainBoard.PrintHighlightedSpacesBoard(mainBoard.UserBoard)
+
+		// hold user input
+		var inputRow int
+		var inputCol int
+		var inputValue int
+
+		// ask for user input
+		fmt.Println("Enter a row:")
 		fmt.Scanln(&inputRow)
-		fmt.Printf("Choose a col:\n")
+		fmt.Println("Enter a col:")
 		fmt.Scanln(&inputCol)
-		fmt.Printf("Choose a val:\n")
-		fmt.Scanln(&inputVal)
+		fmt.Println("Enter a value:")
+		fmt.Scanln(&inputValue)
 
-		// check if the pos from user input is correct
-		if board.ValidUserPos(inputVal, inputRow, inputCol, board.UserBoard) {
-			color.Green("Valid! Placed this value on the board:")
-			// Update UserBoard with newly validated value
-			board.UserBoard[inputRow][inputCol] = inputVal
-			// board.PrintBoard(board.UserBoard)
-			printCorrectSpaceBoard(board.UserBoard, inputRow, inputCol)
-		} else {
-			color.Red("Invalid!")
-			printInCorrectSpaceBoard(board.UserBoard, inputRow, inputCol, inputVal)
+		// check input is valid
+		for inputValue == 0 {
+			fmt.Println("invalid value!")
+			fmt.Println("Enter a value:")
+			fmt.Scanln(&inputValue)
 		}
-		fmt.Println("-----") // formatting
-	}
-	fmt.Println("Done!")
-}
 
-// helper method: allows for finding zeros quickly on UserBoard
-func getZeros(boardArray [9][9]int) [][]int {
-	seen := [][]int{}
+		fmt.Printf("You choose: row:%d,col:%d,value:%d,POS:%d \n", inputRow, inputCol, inputValue, mainBoard.UserBoard[inputRow][inputCol])
 
-	for row := 0; row < len(boardArray); row++ {
-		for col := 0; col < len(boardArray[row]); col++ {
-			currentCoord := [][]int{{row, col}}
+		// user input was correct
+		if mainBoard.ValidPos(inputValue, inputRow, inputCol, mainBoard.UserBoard) {
+			// place on board
+			mainBoard.UserBoard[inputRow][inputCol] = inputValue
 
-			if boardArray[row][col] == 0 {
-				seen = append(seen, currentCoord...)
-			}
+			fmt.Println("Valid!")
+			mainBoard.PrintCorrectSpaceBoard(mainBoard.UserBoard, inputRow, inputCol)
 		}
-	}
-	return seen
-}
 
-// Prints the board although 0's will be highlighted,
-// yellow. Makes it easier to find 0's on board
-func printHighlightedSpacesBoard(boardArray [9][9]int) {
-	for row := 0; row < len(boardArray); row++ {
-		for col := 0; col < len(boardArray[row]); col++ {
-			if boardArray[row][col] == 0 {
-				yellow := color.New(color.FgYellow).SprintFunc()
-				fmt.Printf("%s|", yellow(boardArray[row][col]))
-			} else {
-				fmt.Printf("%d|", boardArray[row][col])
-			}
-		}
-		fmt.Println()
-	}
-}
+		// update move
+		moveMap[currentMove] = mainBoard.UserBoard
+		currentMove++
+		utils.WriteGame(moveMap)
 
-// Prints the board although rowN,colN will be highlighted green,
-// shows user where there valid selection was
-func printCorrectSpaceBoard(boardArray [9][9]int, rowN int, colN int) {
-	for row := 0; row < len(boardArray); row++ {
-		for col := 0; col < len(boardArray[row]); col++ {
-			if row == rowN && col == colN {
-				green := color.New(color.FgGreen).SprintFunc()
-				fmt.Printf("%s|", green(boardArray[row][col]))
-			} else if boardArray[row][col] == 0 {
-				yellow := color.New(color.FgYellow).SprintFunc()
-				fmt.Printf("%s|", yellow(boardArray[row][col]))
-			} else {
-				fmt.Printf("%d|", boardArray[row][col])
-			}
-		}
-		fmt.Println()
+		// update freePos
+		freePos = mainBoard.FreePos(mainBoard.UserBoard)
+
 	}
+
 }
 
 // Prints the board although rowN,colN will be highlighted red,
@@ -145,4 +125,20 @@ func printInCorrectSpaceBoard(boardArray [9][9]int, rowN int, colN int, valueN i
 		}
 		fmt.Println()
 	}
+}
+
+// helper method: allows for finding zeros quickly on UserBoard
+func getZeros(boardArray [9][9]int) [][]int {
+	seen := [][]int{}
+
+	for row := 0; row < len(boardArray); row++ {
+		for col := 0; col < len(boardArray[row]); col++ {
+			currentCoord := [][]int{{row, col}}
+
+			if boardArray[row][col] == 0 {
+				seen = append(seen, currentCoord...)
+			}
+		}
+	}
+	return seen
 }
