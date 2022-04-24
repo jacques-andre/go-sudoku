@@ -1,8 +1,8 @@
 build:
-	go build -o bin/game game.go
+	go build -o bin/main main.go
 
 run:
-	go run game.go
+	go run main.go
 
 test:
 	go test -v ./...
