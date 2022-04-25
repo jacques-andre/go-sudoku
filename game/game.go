@@ -3,27 +3,22 @@ package game
 import (
 	"fmt"
 	"sudoku/board"
-	"sudoku/utils"
 
 	"github.com/fatih/color"
 )
 
 func NewGame() {
 	// blank 2d slice
-	grid := [9][9]int{}
-
-	// init new board struct, both vars use blank board
-	mainBoard := board.Board{SolvedBoard: grid, UserBoard: grid}
+	gameHistory := GameHistory{}
+	mainBoard := board.Board{SolvedBoard: [9][9]int{}, UserBoard: [9][9]int{}}
 
 	// generate initial board for SolvedBoard
 	mainBoard.GenerateBoard(0, 0)
 
 	// UserBoard will copy SolvedBoard with n amount of zeros
-	mainBoard.GenerateUserBoard(30)
+	mainBoard.GenerateUserBoard(2)
 
-	moveMap := map[int][9][9]int{}
-	moveMap[0] = mainBoard.UserBoard
-	currentMove := 1
+	gameHistory.AddMove(mainBoard)
 
 	freePos := mainBoard.FreePos(mainBoard.UserBoard)
 	for freePos != nil {
@@ -43,44 +38,50 @@ func NewGame() {
 		fmt.Println("User Board:")
 		mainBoard.PrintHighlightedSpacesBoard(mainBoard.UserBoard)
 
-		// hold user input
-		var inputRow int
-		var inputCol int
-		var inputValue int
+		// ask user what action?
+		fmt.Println("Undo (u), Redo(r), Place(p)?")
+		var userChoice string
+		fmt.Scanln(&userChoice)
 
-		// ask for user input
-		fmt.Println("Enter a row:")
-		fmt.Scanln(&inputRow)
-		fmt.Println("Enter a col:")
-		fmt.Scanln(&inputCol)
-		fmt.Println("Enter a value:")
-		fmt.Scanln(&inputValue)
+		if userChoice == "p" {
+			// hold user input
+			var inputRow int
+			var inputCol int
+			var inputValue int
 
-		// check input is valid
-		for inputValue == 0 {
-			fmt.Println("invalid value!")
+			// ask for user input
+			fmt.Println("Enter a row:")
+			fmt.Scanln(&inputRow)
+			fmt.Println("Enter a col:")
+			fmt.Scanln(&inputCol)
 			fmt.Println("Enter a value:")
 			fmt.Scanln(&inputValue)
+
+			// check input is valid
+			for inputValue == 0 {
+				fmt.Println("invalid value!")
+				fmt.Println("Enter a value:")
+				fmt.Scanln(&inputValue)
+			}
+
+			fmt.Printf("You choose: row:%d,col:%d,value:%d,POS:%d \n", inputRow, inputCol, inputValue, mainBoard.UserBoard[inputRow][inputCol])
+
+			// user input was correct
+			if mainBoard.ValidPos(inputValue, inputRow, inputCol, mainBoard.UserBoard) {
+				// place on board
+				gameHistory.AddMove(mainBoard)
+				mainBoard.UserBoard[inputRow][inputCol] = inputValue
+
+				fmt.Println("Valid!")
+				mainBoard.PrintCorrectSpaceBoard(mainBoard.UserBoard, inputRow, inputCol)
+			}
+
+			// update freePos
+			freePos = mainBoard.FreePos(mainBoard.UserBoard)
+		} else if userChoice == "u" {
+			lastMove := gameHistory.CurrentHistory[len(gameHistory.CurrentHistory)-1].UserBoard
+			mainBoard.UserBoard = lastMove
 		}
-
-		fmt.Printf("You choose: row:%d,col:%d,value:%d,POS:%d \n", inputRow, inputCol, inputValue, mainBoard.UserBoard[inputRow][inputCol])
-
-		// user input was correct
-		if mainBoard.ValidPos(inputValue, inputRow, inputCol, mainBoard.UserBoard) {
-			// place on board
-			mainBoard.UserBoard[inputRow][inputCol] = inputValue
-
-			fmt.Println("Valid!")
-			mainBoard.PrintCorrectSpaceBoard(mainBoard.UserBoard, inputRow, inputCol)
-		}
-
-		// update move
-		moveMap[currentMove] = mainBoard.UserBoard
-		currentMove++
-		utils.WriteGame(moveMap)
-
-		// update freePos
-		freePos = mainBoard.FreePos(mainBoard.UserBoard)
 
 	}
 
