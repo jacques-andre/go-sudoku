@@ -119,7 +119,7 @@ func NewGame() {
 		// Update freePos after potential placing
 		freePos = mainBoard.FreePos(mainBoard.UserBoard)
 	}
-	gameHistory.SaveGame(mainBoard)
+	gameHistory.SaveGame(mainBoard, "test.json")
 }
 
 // helper method: allows for finding zeros quickly on UserBoard

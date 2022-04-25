@@ -23,7 +23,8 @@ func main() {
 		game.NewGame()
 	}
 	if userIntAnswer == 2 {
-		fmt.Println("yes2")
+		t := game.GameHistory{}
+		t.LoadGame("test.json")
 	}
 
 }

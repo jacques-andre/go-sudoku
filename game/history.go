@@ -1,8 +1,10 @@
 package game
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"sudoku/board"
 )
 
@@ -62,11 +64,57 @@ func (g *GameHistory) RedoMove() (board.Board, error) {
 	return lastItem, nil
 }
 
-func (g *GameHistory) SaveGame(board board.Board) error {
+// Save the passed in board to fileName (json)
+func (g *GameHistory) SaveGame(board board.Board, fileName string) error {
+	// Map move name to board postion
+	movesMap := make(map[string][9][9]int)
+
+	// Go through CurrentHistory, append to map
 	for i := 0; i < len(g.CurrentHistory); i++ {
 		moveName := fmt.Sprintf("move-%d", i)
-		fmt.Println(moveName)
-		g.CurrentHistory[i].PrintBoard(g.CurrentHistory[i].UserBoard)
+		currentBoard := g.CurrentHistory[i].UserBoard
+
+		movesMap[moveName] = currentBoard
 	}
+	file, err := json.MarshalIndent(movesMap, "", " ")
+
+	if err != nil {
+		fmt.Printf("Error!: %s \n", err.Error())
+		return err
+	}
+	err = ioutil.WriteFile(fileName, file, 0644)
+	if err != nil {
+		fmt.Printf("Error!: %s \n", err.Error())
+		return err
+	} else {
+		fmt.Printf("Successfully wrote %d moves to %s \n", len(g.CurrentHistory), fileName)
+	}
+
 	return nil
+}
+
+func (g *GameHistory) LoadGame(fileName string) error {
+	// Map move name to board postion
+	movesMap := make(map[string][9][9]int)
+
+	jsonFile, err := ioutil.ReadFile(fileName)
+
+	if err != nil {
+		return err
+	}
+	json.Unmarshal(jsonFile, &movesMap)
+
+	// Convert map into CurrentHistory
+	for _, value := range movesMap {
+		currentBoard := board.Board{value, value}
+		g.CurrentHistory.Push(currentBoard)
+	}
+	for i := range g.CurrentHistory {
+		fmt.Printf("Move-%d\n", i)
+		g.CurrentHistory[i].PrintBoard(g.CurrentHistory[i].UserBoard)
+		fmt.Println("----")
+	}
+	fmt.Printf("stack size: %d\n", len(g.CurrentHistory))
+	return nil
+
 }
