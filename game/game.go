@@ -6,19 +6,28 @@ import (
 )
 
 // Run the game program, keeps track of history and the current state of the board,
-func NewGame() {
-	// Initliaze gameHistory & mainBoard to be used throughout function
-	gameHistory := GameHistory{}
+func NewGame(gameHistory GameHistory) {
 	mainBoard := board.Board{SolvedBoard: [9][9]int{}, UserBoard: [9][9]int{}}
-	const USER_BLANK_SPACES = 2
 
-	// Generates a SolvedBoard
-	mainBoard.GenerateBoard(0, 0)
+	// Check if there is already a game history,
+	// use that game if so
+	if len(gameHistory.CurrentHistory) >= 1 {
+		lastBoard := gameHistory.CurrentHistory[len(gameHistory.CurrentHistory)-1].UserBoard
+		mainBoard.UserBoard = lastBoard
+		mainBoard.SolvedBoard = lastBoard
 
-	// Generates a user playable board with n blank spaces
-	mainBoard.GenerateUserBoard(USER_BLANK_SPACES)
+		mainBoard.SolveBoard(0, 0)
 
-	gameHistory.AddMove(mainBoard)
+	} else {
+		// Initliaze gameHistory & mainBoard to be used throughout function
+		const USER_BLANK_SPACES = 2
+		// Generates a SolvedBoard
+		mainBoard.GenerateBoard(0, 0)
+		// Generates a user playable board with n blank spaces
+		mainBoard.GenerateUserBoard(USER_BLANK_SPACES)
+
+		gameHistory.AddMove(mainBoard)
+	}
 
 	// While we have a free postion on the board,
 	// continue the game for the user

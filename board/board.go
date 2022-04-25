@@ -76,12 +76,9 @@ func (board *Board) GenerateUserBoard(n int) {
 	}
 }
 
-// Solves board.UserBoard (existing board),
-// Differs from GenerateBoard as it does not use random numbers,
-// when solving it attempts 1-9 in order
-func (board *Board) SolveBoard(cellVal int, row int, col int) bool {
+func (board *Board) SolveBoard(row int, col int, boardArray *[9][9]int) bool {
 	// get the next available pos on board
-	freePos := board.FreePos(board.UserBoard)
+	freePos := board.FreePos(*boardArray)
 	if freePos == nil {
 		// no more positions, done
 		return true
@@ -94,14 +91,14 @@ func (board *Board) SolveBoard(cellVal int, row int, col int) bool {
 	for i := 1; i <= 9; i++ {
 		// board.PrintBoard()
 		// fmt.Printf("Checking: row:%d,col:%d,val:%d \n", freeRow, freeCol, i)
-		if board.ValidPos(i, freeRow, freeCol, board.UserBoard) {
+		if board.ValidPos(i, freeRow, freeCol, *boardArray) {
 			// fmt.Printf("Valid! row:%d, col:%d, val:%d \n", freeRow, freeCol, i)
-			board.UserBoard[freeRow][freeCol] = i
-			if board.SolveBoard(i, freeRow, freeCol+1) {
+			boardArray[freeRow][freeCol] = i
+			if board.SolveBoard(freeRow, freeCol+1, boardArray) {
 				return true
 			}
 			// backtrack
-			board.UserBoard[freeRow][freeCol] = 0
+			boardArray[freeRow][freeCol] = 0
 		}
 	}
 	return false
