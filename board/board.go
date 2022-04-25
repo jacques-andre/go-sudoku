@@ -241,3 +241,22 @@ func (board *Board) PrintCorrectSpaceBoard(boardArray [9][9]int, rowN int, colN 
 		fmt.Println()
 	}
 }
+
+// Prints the board although rowN,colN will be highlighted red,
+// shows user where there invalid selection was
+func (board *Board) PrintInCorrectSpaceBoard(boardArray [9][9]int, rowN int, colN int, valueN int) {
+	for row := 0; row < len(boardArray); row++ {
+		for col := 0; col < len(boardArray[row]); col++ {
+			if row == rowN && col == colN {
+				red := color.New(color.FgRed).SprintFunc()
+				fmt.Printf("%s|", red(valueN))
+			} else if boardArray[row][col] == 0 {
+				yellow := color.New(color.FgYellow).SprintFunc()
+				fmt.Printf("%s|", yellow(boardArray[row][col]))
+			} else {
+				fmt.Printf("%d|", boardArray[row][col])
+			}
+		}
+		fmt.Println()
+	}
+}

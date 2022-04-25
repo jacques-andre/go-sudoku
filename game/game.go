@@ -3,25 +3,29 @@ package game
 import (
 	"fmt"
 	"sudoku/board"
-
-	"github.com/fatih/color"
 )
 
+// Run the game program, keeps track of history and the current state of the board,
 func NewGame() {
-	// blank 2d slice
+	// Initliaze gameHistory & mainBoard to be used throughout function
 	gameHistory := GameHistory{}
 	mainBoard := board.Board{SolvedBoard: [9][9]int{}, UserBoard: [9][9]int{}}
+	const USER_BLANK_SPACES = 3
 
-	// generate initial board for SolvedBoard
+	// Generates a SolvedBoard
 	mainBoard.GenerateBoard(0, 0)
 
-	// UserBoard will copy SolvedBoard with n amount of zeros
-	mainBoard.GenerateUserBoard(2)
+	// Generates a user playable board with n blank spaces
+	mainBoard.GenerateUserBoard(USER_BLANK_SPACES)
 
 	gameHistory.AddMove(mainBoard)
 
+	// While we have a free postion on the board,
+	// continue the game for the user
 	freePos := mainBoard.FreePos(mainBoard.UserBoard)
 	for freePos != nil {
+		fmt.Println("------") // Formatting
+
 		// DEBUG
 		zeros := getZeros(mainBoard.UserBoard)
 		for i, v := range zeros {
@@ -34,8 +38,11 @@ func NewGame() {
 			fmt.Printf("DEBUG: Found blank pos at row:%d,col:%d,ans:%d,\n", zeroRow, zeroCol, answer)
 		}
 
+		// DEBUG
+		fmt.Printf("Undo Stack size: %v\n", len(gameHistory.CurrentHistory))
+
 		// Print the current board
-		fmt.Println("User Board:")
+		fmt.Println("Current Board:")
 		mainBoard.PrintHighlightedSpacesBoard(mainBoard.UserBoard)
 
 		// ask user what action?
@@ -43,6 +50,7 @@ func NewGame() {
 		var userChoice string
 		fmt.Scanln(&userChoice)
 
+		// User is placing on the board
 		if userChoice == "p" {
 			// hold user input
 			var inputRow int
@@ -57,6 +65,9 @@ func NewGame() {
 			fmt.Println("Enter a value:")
 			fmt.Scanln(&inputValue)
 
+			// TODO VALIDATE USER INPUT
+			// could be a seperate func
+
 			// check input is valid
 			for inputValue == 0 {
 				fmt.Println("invalid value!")
@@ -64,45 +75,30 @@ func NewGame() {
 				fmt.Scanln(&inputValue)
 			}
 
-			fmt.Printf("You choose: row:%d,col:%d,value:%d,POS:%d \n", inputRow, inputCol, inputValue, mainBoard.UserBoard[inputRow][inputCol])
+			fmt.Printf("You chose: row:%d,col:%d,value:%d,\n", inputRow, inputCol, inputValue)
 
-			// user input was correct
+			// If the user input was correct,
+			// show it on the board with color formatting,
+			// update board with this value & history
 			if mainBoard.ValidPos(inputValue, inputRow, inputCol, mainBoard.UserBoard) {
-				// place on board
 				gameHistory.AddMove(mainBoard)
-				mainBoard.UserBoard[inputRow][inputCol] = inputValue
 
-				fmt.Println("Valid!")
+				mainBoard.UserBoard[inputRow][inputCol] = inputValue // place the validated user input value on the board
+
+				fmt.Println("Correct!")
 				mainBoard.PrintCorrectSpaceBoard(mainBoard.UserBoard, inputRow, inputCol)
 			}
+		}
 
-			// update freePos
-			freePos = mainBoard.FreePos(mainBoard.UserBoard)
-		} else if userChoice == "u" {
-			lastMove := gameHistory.CurrentHistory[len(gameHistory.CurrentHistory)-1].UserBoard
+		// User is undoing a place on the board,
+		// first get the last done move from gameHistory,
+		// reapply this move to the mainBoard
+		if userChoice == "u" {
+			lastMove := gameHistory.UndoMove().UserBoard
 			mainBoard.UserBoard = lastMove
 		}
-
-	}
-
-}
-
-// Prints the board although rowN,colN will be highlighted red,
-// shows user where there invalid selection was
-func printInCorrectSpaceBoard(boardArray [9][9]int, rowN int, colN int, valueN int) {
-	for row := 0; row < len(boardArray); row++ {
-		for col := 0; col < len(boardArray[row]); col++ {
-			if row == rowN && col == colN {
-				red := color.New(color.FgRed).SprintFunc()
-				fmt.Printf("%s|", red(valueN))
-			} else if boardArray[row][col] == 0 {
-				yellow := color.New(color.FgYellow).SprintFunc()
-				fmt.Printf("%s|", yellow(boardArray[row][col]))
-			} else {
-				fmt.Printf("%d|", boardArray[row][col])
-			}
-		}
-		fmt.Println()
+		// Update freePos after potential placing
+		freePos = mainBoard.FreePos(mainBoard.UserBoard)
 	}
 }
 

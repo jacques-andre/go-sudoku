@@ -12,6 +12,7 @@ func (g *GameHistory) AddMove(board board.Board) {
 	g.RedoHistory = nil
 }
 
+// Return and pop from the CurrentHistory stack
 func (g *GameHistory) UndoMove() board.Board {
 	lastItem, _ := g.CurrentHistory.Pop()
 	g.RedoHistory.Push(lastItem)
