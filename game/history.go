@@ -11,12 +11,15 @@ type GameHistory struct {
 	RedoHistory    Stack
 }
 
+// Updates current history to include the passed in board,
+// this also clears the redo history
 func (g *GameHistory) AddMove(board board.Board) {
 	g.CurrentHistory.Push(board)
 	g.RedoHistory = nil
 }
 
-// Return and pop from the CurrentHistory stack
+// Pops the last item off the stack, adds to redo history,
+// returns the last version of the board
 func (g *GameHistory) UndoMove() (board.Board, error) {
 
 	// Cant undo when only original state of the board is left
@@ -39,6 +42,8 @@ func (g *GameHistory) UndoMove() (board.Board, error) {
 	return g.CurrentHistory[len(g.CurrentHistory)-1], nil
 }
 
+// Pops the last item off the stack, adds to undo history,
+// returns the last version of the board
 func (g *GameHistory) RedoMove() (board.Board, error) {
 	// If no redo history, throw err
 	if len(g.RedoHistory) == 0 {
@@ -55,4 +60,13 @@ func (g *GameHistory) RedoMove() (board.Board, error) {
 	g.CurrentHistory.Push(lastItem)
 
 	return lastItem, nil
+}
+
+func (g *GameHistory) SaveGame(board board.Board) error {
+	for i := 0; i < len(g.CurrentHistory); i++ {
+		moveName := fmt.Sprintf("move-%d", i)
+		fmt.Println(moveName)
+		g.CurrentHistory[i].PrintBoard(g.CurrentHistory[i].UserBoard)
+	}
+	return nil
 }

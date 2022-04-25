@@ -10,7 +10,7 @@ func NewGame() {
 	// Initliaze gameHistory & mainBoard to be used throughout function
 	gameHistory := GameHistory{}
 	mainBoard := board.Board{SolvedBoard: [9][9]int{}, UserBoard: [9][9]int{}}
-	const USER_BLANK_SPACES = 20
+	const USER_BLANK_SPACES = 2
 
 	// Generates a SolvedBoard
 	mainBoard.GenerateBoard(0, 0)
@@ -119,6 +119,7 @@ func NewGame() {
 		// Update freePos after potential placing
 		freePos = mainBoard.FreePos(mainBoard.UserBoard)
 	}
+	gameHistory.SaveGame(mainBoard)
 }
 
 // helper method: allows for finding zeros quickly on UserBoard
