@@ -41,10 +41,12 @@ func main() {
 	var userIntAnswer int
 	fmt.Scanln(&userIntAnswer)
 
+	// Start a new game
 	if userIntAnswer == 1 {
 		gameHistory := game.GameHistory{}
 		game.NewGame(gameHistory)
 	}
+	// Load in game from file
 	if userIntAnswer == 2 {
 		fmt.Println("What is the name of the file you would like to load in?")
 
