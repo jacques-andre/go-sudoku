@@ -20,8 +20,9 @@ func NewGame(gameHistory GameHistory) {
 		// solve the board that has been passed
 		mainBoard.SolveBoard(0, 0, &mainBoard.SolvedBoard)
 
+		fmt.Printf("Successfully loaded in game, stack size: %d \n", len(gameHistory.CurrentHistory))
+
 		// DEBUG
-		// fmt.Println("Loaded in:")
 		// mainBoard.PrintBoard(mainBoard.UserBoard)
 		// fmt.Println("Solved:")
 		// mainBoard.PrintBoard(mainBoard.SolvedBoard)

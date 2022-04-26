@@ -106,7 +106,7 @@ func (g *GameHistory) LoadGame(fileName string) error {
 
 	// Convert map into CurrentHistory
 	for _, value := range movesMap {
-		currentBoard := board.Board{value, value}
+		currentBoard := board.Board{UserBoard: value, SolvedBoard: value}
 		g.CurrentHistory.Push(currentBoard)
 	}
 	for i := range g.CurrentHistory {
@@ -114,7 +114,6 @@ func (g *GameHistory) LoadGame(fileName string) error {
 		g.CurrentHistory[i].PrintBoard(g.CurrentHistory[i].UserBoard)
 		fmt.Println("----")
 	}
-	fmt.Printf("stack size: %d\n", len(g.CurrentHistory))
 	return nil
 
 }
