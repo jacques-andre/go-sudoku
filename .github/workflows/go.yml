@@ -11,7 +11,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
     - name: Set up Go
       uses: actions/setup-go@v2
@@ -23,9 +23,11 @@ jobs:
 
     - name: Test
       run: go test -v ./...
-      
+
     - name: Run coverage
-      run: go test -race -coverprofile=coverage.out -covermode=atomic
-      
+      run: go test -coverpkg=./... -coverprofile=coverage.txt -covermode=atomic ./...
+
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v2
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
