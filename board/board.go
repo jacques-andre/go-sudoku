@@ -208,6 +208,7 @@ func (board *Board) PrintBoard(boardArray [9][9]int) {
 // yellow. Makes it easier to find 0's on board
 func (board *Board) PrintHighlightedSpacesBoard(boardArray [9][9]int) {
 	for row := 0; row < len(boardArray); row++ {
+		fmt.Printf("row:%d \t", row)
 		for col := 0; col < len(boardArray[row]); col++ {
 			if boardArray[row][col] == 0 {
 				yellow := color.New(color.FgYellow).SprintFunc()
