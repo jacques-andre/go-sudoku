@@ -9,7 +9,5 @@ ADD . /app
 # specify commands should be run from /app
 WORKDIR /app
 
-# build
 RUN make
-
-CMD ["./bin/game"]
+CMD ["./bin/main"]
