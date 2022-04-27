@@ -187,3 +187,32 @@ func TestGenerateUserBoard(t *testing.T) {
 		t.Errorf("Failed! UserBoard does not have valid amount of zeros! Expecting:%d,Got:%d ", n, count)
 	}
 }
+
+// Test able to solve grid
+func TestSolveBoard(t *testing.T) {
+	// Create a test board to solve
+	grid := [9][9]int{
+		{9, 0, 0, 2, 0, 0, 0, 5, 0},
+		{0, 7, 6, 0, 0, 8, 0, 4, 0},
+		{0, 0, 0, 4, 0, 0, 0, 0, 3},
+		{0, 6, 0, 1, 0, 0, 0, 0, 4},
+		{0, 0, 4, 0, 9, 0, 5, 0, 0},
+		{2, 0, 0, 0, 0, 6, 0, 7, 0},
+		{3, 0, 0, 0, 0, 4, 0, 0, 0},
+		{0, 2, 0, 8, 0, 0, 4, 3, 0},
+		{0, 8, 0, 0, 0, 5, 0, 0, 2},
+	}
+	board := Board{UserBoard: grid, SolvedBoard: grid}
+
+	board.SolveBoard(0, 0, &board.SolvedBoard)
+
+	// Go through all values on board, check filled
+	for row := 0; row < len(board.SolvedBoard); row++ {
+		for col := 0; col < len(board.SolvedBoard[row]); col++ {
+			if board.SolvedBoard[row][col] == 0 {
+				t.Errorf("Failed! Missing value at row:%d,col:%d", row, col)
+			}
+		}
+	}
+
+}
