@@ -161,3 +161,29 @@ func TestGenerateBoard(t *testing.T) {
 		}
 	}
 }
+
+// Test we are able to generate user board
+func TestGenerateUserBoard(t *testing.T) {
+	grid := [9][9]int{}
+	board := Board{UserBoard: grid, SolvedBoard: grid}
+
+	// Generate a SolvedBoard, userboard will be based off
+	board.GenerateBoard(0, 0)
+
+	n := 40
+	board.GenerateUserBoard(n)
+
+	count := 0
+	// Go through all values on board, count zeros
+	for row := 0; row < len(board.UserBoard); row++ {
+		for col := 0; col < len(board.UserBoard[row]); col++ {
+			if board.UserBoard[row][col] == 0 {
+				count++
+			}
+		}
+	}
+
+	if count != n {
+		t.Errorf("Failed! UserBoard does not have valid amount of zeros! Expecting:%d,Got:%d ", n, count)
+	}
+}
