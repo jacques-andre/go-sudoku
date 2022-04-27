@@ -1,7 +1,8 @@
-package game
+package game_test
 
 import (
 	"sudoku/board"
+	"sudoku/game"
 	"testing"
 )
 
@@ -11,7 +12,7 @@ func TestAddToStack(t *testing.T) {
 	board := board.Board{UserBoard: grid, SolvedBoard: grid}
 
 	// Create a emptyStack
-	testStack := Stack{}
+	testStack := game.Stack{}
 	// Push board to stack
 	testStack.Push(board)
 
@@ -30,7 +31,7 @@ func TestPopStack(t *testing.T) {
 	board := board.Board{UserBoard: grid, SolvedBoard: grid}
 
 	// Create a emptyStack
-	testStack := Stack{}
+	testStack := game.Stack{}
 	// Push board to stack
 	testStack.Push(board)
 	testStack.Pop()
@@ -50,7 +51,7 @@ func TestIsEmpty(t *testing.T) {
 	board := board.Board{UserBoard: grid, SolvedBoard: grid}
 
 	// Create a emptyStack
-	testStack := Stack{}
+	testStack := game.Stack{}
 	// Push board to stack
 	testStack.Push(board)
 	testStack.Pop()
