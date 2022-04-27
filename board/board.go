@@ -119,20 +119,7 @@ func (board *Board) ValidPos(cellVal int, row int, col int, boardArray [9][9]int
 	return false
 }
 
-// Checks if the given position by a user is valid,
-// based of ValidPos^ AND if SolvedBoard[row][col],
-// is the same as UserBoard[row][col]
-func (board *Board) ValidUserPos(cellVal int, row int, col int, boardArray [9][9]int) bool {
-	// answer to the cell the user chose
-	validInputCell := board.SolvedBoard[row][col]
 
-	if board.ValidPos(cellVal, row, col, board.UserBoard) {
-		if cellVal == validInputCell {
-			return true
-		}
-	}
-	return false
-}
 
 // Checks next free pos on board
 // Returns [row,col] of first found free pos
