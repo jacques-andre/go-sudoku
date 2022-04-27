@@ -45,20 +45,20 @@ func NewGame(gameHistory GameHistory) {
 	for freePos != nil {
 		fmt.Println("------") // Formatting
 
-		// // DEBUG
-		// zeros := getZeros(mainBoard.UserBoard)
-		// count := 0
-		// for i, v := range zeros {
-		// 	// get the answer of where the blank cell is
-		// 	zeroRow := zeros[i][0]
-		// 	zeroCol := zeros[i][1]
-		// 	answer := mainBoard.SolvedBoard[zeroRow][zeroCol]
-		// 	_ = v
-		// 	count++
+		// DEBUG
+		zeros := getZeros(mainBoard.UserBoard)
+		count := 0
+		for i, v := range zeros {
+			// get the answer of where the blank cell is
+			zeroRow := zeros[i][0]
+			zeroCol := zeros[i][1]
+			answer := mainBoard.SolvedBoard[zeroRow][zeroCol]
+			_ = v
+			count++
 
-		// 	fmt.Printf("DEBUG: Found blank pos at row:%d,col:%d,ans:%d,\n", zeroRow, zeroCol, answer)
-		// }
-		// fmt.Printf("DEBUG: Total blanks: %d\n", count)
+			fmt.Printf("DEBUG: Found blank pos at row:%d,col:%d,ans:%d,\n", zeroRow, zeroCol, answer)
+		}
+		fmt.Printf("DEBUG: Total blanks: %d\n", count)
 
 		// DEBUG
 		fmt.Printf("CurrentHistory Stack size: %v\n", len(gameHistory.CurrentHistory))
@@ -103,16 +103,16 @@ func NewGame(gameHistory GameHistory) {
 			// If the user input was correct,
 			// show it on the board with color formatting,
 			// update board with this value & history
-			if mainBoard.ValidPos(inputValue, inputRow, inputCol, mainBoard.UserBoard) {
+			if mainBoard.SolvedBoard[inputRow][inputCol] == inputValue {
 				mainBoard.UserBoard[inputRow][inputCol] = inputValue // place the validated user input value on the board
 				gameHistory.AddMove(mainBoard)
-
 				fmt.Println("Correct!")
 				mainBoard.PrintCorrectSpaceBoard(mainBoard.UserBoard, inputRow, inputCol)
 			} else {
 				fmt.Println("Incorrect!")
 				mainBoard.PrintInCorrectSpaceBoard(mainBoard.UserBoard, inputRow, inputCol, inputValue)
 			}
+
 		}
 
 		// User is undoing a place on the board,
