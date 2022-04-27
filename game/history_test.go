@@ -1,6 +1,7 @@
 package game_test
 
 import (
+	"fmt"
 	"os"
 	"sudoku/board"
 	"sudoku/game"
@@ -150,7 +151,11 @@ func TestLoadGame(t *testing.T) {
 
 	// Load in the game
 	gameHistory := game.GameHistory{}
-	gameHistory.LoadGame("test.json")
+	err := gameHistory.LoadGame("test.json")
+
+	if err != nil {
+		fmt.Printf("Error loading file! %s", err.Error())
+	}
 
 	// Test we are able to get the most up to date board,
 	// Expecting to get boards used from TestSaveGame
