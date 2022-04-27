@@ -142,3 +142,22 @@ func TestInValidInBoardSubGrid(t *testing.T) {
 		fmt.Printf("checkingPos:%d", checkingPos)
 	}
 }
+
+// Test we are able to generate boards
+func TestGenerateBoard(t *testing.T) {
+	grid := [9][9]int{}
+	board := Board{UserBoard: grid, SolvedBoard: grid}
+
+	// Generate a SolvedBoard
+	board.GenerateBoard(0, 0)
+
+	// Go through all values on board,
+	// check if filled
+	for row := 0; row < len(board.SolvedBoard); row++ {
+		for col := 0; col < len(board.SolvedBoard[row]); col++ {
+			if board.SolvedBoard[row][col] == 0 {
+				t.Errorf("Failed! Missing value at row:%d,col:%d", row, col)
+			}
+		}
+	}
+}
