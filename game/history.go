@@ -65,7 +65,7 @@ func (g *GameHistory) RedoMove() (board.Board, error) {
 }
 
 // Save the passed in board to fileName (json)
-func (g *GameHistory) SaveGame(board board.Board, fileName string) error {
+func (g *GameHistory) SaveGame(fileName string) error {
 	// Map move name to board postion
 	movesMap := make(map[string][9][9]int)
 

@@ -146,7 +146,7 @@ func NewGame(gameHistory GameHistory) {
 			var userFileInput string
 			fmt.Scanln(&userFileInput)
 
-			gameHistory.SaveGame(mainBoard, userFileInput)
+			gameHistory.SaveGame(userFileInput)
 		}
 		// Update freePos after potential placing
 		freePos = mainBoard.FreePos(mainBoard.UserBoard)
