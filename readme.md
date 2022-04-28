@@ -1,7 +1,5 @@
 ![Go build](https://github.com/jacques-andre/go-sudoku/actions/workflows/go.yml/badge.svg)
 
-[![codecov](https://codecov.io/gh/jacques-andre/go-sudoku/branch/master/graph/badge.svg?token=MS0F0KD4QK)](https://codecov.io/gh/jacques-andre/go-sudoku)
-
 
 ## Running the program:
 
