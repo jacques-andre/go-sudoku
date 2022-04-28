@@ -17,26 +17,6 @@ func main() {
 	// or replay a old game
 	fmt.Println("Press 1 for a new game, 2 for replaying a game")
 
-	// testGrid := [9][9]int{
-	// 	{9, 0, 0, 2, 0, 0, 0, 5, 0},
-	// 	{0, 7, 6, 0, 0, 8, 0, 4, 0},
-	// 	{0, 0, 0, 4, 0, 0, 0, 0, 3},
-	// 	{0, 6, 0, 1, 0, 0, 0, 0, 4},
-	// 	{0, 0, 4, 0, 9, 0, 5, 0, 0},
-	// 	{2, 0, 0, 0, 0, 6, 0, 7, 0},
-	// 	{3, 0, 0, 0, 0, 4, 0, 0, 0},
-	// 	{0, 2, 0, 8, 0, 0, 4, 3, 0},
-	// 	{0, 8, 0, 0, 0, 5, 0, 0, 2},
-	// }
-
-	// board := board.Board{UserBoard: testGrid, SolvedBoard: testGrid}
-
-	// board.PrintBoard(board.UserBoard)
-	// fmt.Println("-------")
-
-	// board.SolveBoard(0, 0, &board.UserBoard)
-	// board.PrintBoard(board.UserBoard)
-
 	// hold 1 or 2?
 	var userIntAnswer int
 	fmt.Scanln(&userIntAnswer)
@@ -56,7 +36,11 @@ func main() {
 
 		// Create a gameHistory with file input
 		gameHistory := game.GameHistory{}
-		gameHistory.LoadGame(userFileInput)
+		err := gameHistory.LoadGame(userFileInput)
+
+		if err != nil {
+			panic(err.Error())
+		}
 
 		game.NewGame(gameHistory)
 	}
