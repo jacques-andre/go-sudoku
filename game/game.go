@@ -23,6 +23,30 @@ func NewGame(gameHistory GameHistory) {
 		fmt.Printf("Successfully loaded in game, stack size: %d \n", len(gameHistory.CurrentHistory))
 	}
 
+	// Ask the user what difficulty to play?
+	fmt.Println("Easy(e), Medium(m), Hard(h)?")
+	var inputDifficulty string
+	fmt.Scanln(&inputDifficulty)
+	// Generates a SolvedBoard
+	mainBoard.GenerateBoard(0, 0)
+
+	// Easy
+	if inputDifficulty == "e" {
+		// Generates a user playable board with n blank spaces
+		mainBoard.GenerateUserBoard(10)
+
+	}
+	if inputDifficulty == "m" {
+		// Generates a user playable board with n blank spaces
+		mainBoard.GenerateUserBoard(20)
+	}
+	if inputDifficulty == "h" {
+		// Generates a user playable board with n blank spaces
+		mainBoard.GenerateUserBoard(30)
+	}
+	// Add the first state of the board to history
+	gameHistory.AddMove(mainBoard)
+
 	// While we have a free postion on the board,
 	// continue the game for the user
 	freePos := mainBoard.FreePos(mainBoard.UserBoard)
@@ -32,30 +56,6 @@ func NewGame(gameHistory GameHistory) {
 		// DEBUG
 		fmt.Printf("CurrentHistory Stack size: %v\n", len(gameHistory.CurrentHistory))
 		fmt.Printf("Redo Stack size: %v\n", len(gameHistory.RedoHistory))
-
-		// Ask the user what difficulty to play?
-		fmt.Println("Easy(e), Medium(m), Hard(h)?")
-		var inputDifficulty string
-		fmt.Scanln(&inputDifficulty)
-
-		// Generates a SolvedBoard
-		mainBoard.GenerateBoard(0, 0)
-		// Easy
-		if inputDifficulty == "e" {
-			// Generates a user playable board with n blank spaces
-			mainBoard.GenerateUserBoard(10)
-
-		}
-		if inputDifficulty == "m" {
-			// Generates a user playable board with n blank spaces
-			mainBoard.GenerateUserBoard(20)
-		}
-		if inputDifficulty == "h" {
-			// Generates a user playable board with n blank spaces
-			mainBoard.GenerateUserBoard(30)
-		}
-		// Add the first state of the board to history
-		gameHistory.AddMove(mainBoard)
 
 		// Print the current board
 		fmt.Println("Current Board:")
