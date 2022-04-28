@@ -21,22 +21,6 @@ func NewGame(gameHistory GameHistory) {
 		mainBoard.SolveBoard(0, 0, &mainBoard.SolvedBoard)
 
 		fmt.Printf("Successfully loaded in game, stack size: %d \n", len(gameHistory.CurrentHistory))
-
-		// DEBUG
-		// mainBoard.PrintBoard(mainBoard.UserBoard)
-		// fmt.Println("Solved:")
-		// mainBoard.PrintBoard(mainBoard.SolvedBoard)
-
-	} else {
-		// Not loaded in, start new game
-		const USER_BLANK_SPACES = 6
-		// Generates a SolvedBoard
-		mainBoard.GenerateBoard(0, 0)
-		// Generates a user playable board with n blank spaces
-		mainBoard.GenerateUserBoard(USER_BLANK_SPACES)
-
-		// Add the first state of the board to history
-		gameHistory.AddMove(mainBoard)
 	}
 
 	// While we have a free postion on the board,
@@ -46,23 +30,32 @@ func NewGame(gameHistory GameHistory) {
 		fmt.Println("------") // Formatting
 
 		// DEBUG
-		zeros := getZeros(mainBoard.UserBoard)
-		count := 0
-		for i, v := range zeros {
-			// get the answer of where the blank cell is
-			zeroRow := zeros[i][0]
-			zeroCol := zeros[i][1]
-			answer := mainBoard.SolvedBoard[zeroRow][zeroCol]
-			_ = v
-			count++
-
-			fmt.Printf("DEBUG: Found blank pos at row:%d,col:%d,ans:%d,\n", zeroRow, zeroCol, answer)
-		}
-		fmt.Printf("DEBUG: Total blanks: %d\n", count)
-
-		// DEBUG
 		fmt.Printf("CurrentHistory Stack size: %v\n", len(gameHistory.CurrentHistory))
 		fmt.Printf("Redo Stack size: %v\n", len(gameHistory.RedoHistory))
+
+		// Ask the user what difficulty to play?
+		fmt.Println("Easy(e), Medium(m), Hard(h)?")
+		var inputDifficulty string
+		fmt.Scanln(&inputDifficulty)
+
+		// Generates a SolvedBoard
+		mainBoard.GenerateBoard(0, 0)
+		// Easy
+		if inputDifficulty == "e" {
+			// Generates a user playable board with n blank spaces
+			mainBoard.GenerateUserBoard(10)
+
+		}
+		if inputDifficulty == "m" {
+			// Generates a user playable board with n blank spaces
+			mainBoard.GenerateUserBoard(20)
+		}
+		if inputDifficulty == "h" {
+			// Generates a user playable board with n blank spaces
+			mainBoard.GenerateUserBoard(30)
+		}
+		// Add the first state of the board to history
+		gameHistory.AddMove(mainBoard)
 
 		// Print the current board
 		fmt.Println("Current Board:")
@@ -75,6 +68,21 @@ func NewGame(gameHistory GameHistory) {
 
 		// User is placing on the board
 		if userChoice == "p" {
+			// DEBUG
+			zeros := getZeros(mainBoard.UserBoard)
+			count := 0
+			for i, v := range zeros {
+				// get the answer of where the blank cell is
+				zeroRow := zeros[i][0]
+				zeroCol := zeros[i][1]
+				answer := mainBoard.SolvedBoard[zeroRow][zeroCol]
+				_ = v
+				count++
+
+				fmt.Printf("DEBUG: Found blank pos at row:%d,col:%d,ans:%d,\n", zeroRow, zeroCol, answer)
+			}
+			fmt.Printf("DEBUG: Total blanks: %d\n", count)
+
 			// hold user input
 			var inputRow int
 			var inputCol int
