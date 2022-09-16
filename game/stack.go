@@ -11,7 +11,7 @@ func (s *Stack) IsEmpty() bool {
 
 // Push a new value onto the stack
 func (s *Stack) Push(board board.Board) {
-	*s = append(*s, board) // Simply append the new value to the end of the stack
+	*s = append(*s, board) // append the new value to the end of the stack
 }
 
 // Remove and return top element of stack. Return false if stack is empty.
